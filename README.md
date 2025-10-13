@@ -21,99 +21,72 @@ A homelab for self-hosting open source software.
   <tr>
     <td align="center" width="200"><b>Infrastructure & Orchestration</b></td>
     <td align="center">
-      <div style="display: inline-block; text-align: center; margin: 10px;">
-        <img src="assets/terraform.svg" alt="Terraform" width="80" height="80"/><br/>
-        <b>Terraform</b>
-      </div>
-      <div style="display: inline-block; text-align: center; margin: 10px;">
-        <img src="assets/ansible.svg" alt="Ansible" width="80" height="80"/><br/>
-        <b>Ansible</b>
-      </div>
-      <div style="display: inline-block; text-align: center; margin: 10px;">
-        <img src="assets/docker.svg" alt="Docker" width="80" height="80"/><br/>
-        <b>Docker</b>
-      </div>
-      <div style="display: inline-block; text-align: center; margin: 10px;">
-        <img src="assets/kubernetes.svg" alt="Kubernetes" width="80" height="80"/><br/>
-        <b>Kubernetes</b>
-      </div>
+      <table>
+        <tr>
+          <td align="center"><img src="assets/terraform.svg" alt="Terraform" width="80" height="80"/><br/><b>Terraform</b></td>
+          <td align="center"><img src="assets/ansible.svg" alt="Ansible" width="80" height="80"/><br/><b>Ansible</b></td>
+          <td align="center"><img src="assets/docker.svg" alt="Docker" width="80" height="80"/><br/><b>Docker</b></td>
+          <td align="center"><img src="assets/kubernetes.svg" alt="Kubernetes" width="80" height="80"/><br/><b>Kubernetes</b></td>
+        </tr>
+      </table>
     </td>
   </tr>
   <tr>
     <td align="center" width="200"><b>Virtualization & Operating Systems</b></td>
     <td align="center">
-      <div style="display: inline-block; text-align: center; margin: 10px;">
-        <img src="assets/proxmox.svg" alt="Proxmox" width="80" height="80"/><br/>
-        <b>Proxmox</b>
-      </div>
-      <div style="display: inline-block; text-align: center; margin: 10px;">
-        <img src="assets/linux.svg" alt="Talos Linux" width="80" height="80"/><br/>
-        <b>Talos Linux</b>
-      </div>
+      <table>
+        <tr>
+          <td align="center"><img src="assets/proxmox.svg" alt="Proxmox" width="80" height="80"/><br/><b>Proxmox</b></td>
+          <td align="center"><img src="assets/linux.svg" alt="Talos Linux" width="80" height="80"/><br/><b>Talos Linux</b></td>
+        </tr>
+      </table>
     </td>
   </tr>
   <tr>
     <td align="center" width="200"><b>Networking & Security</b></td>
     <td align="center">
-      <div style="display: inline-block; text-align: center; margin: 10px;">
-        <img src="assets/cloudflare.svg" alt="Cloudflare" width="80" height="80"/><br/>
-        <b>Cloudflare</b>
-      </div>
-      <div style="display: inline-block; text-align: center; margin: 10px;">
-        <img src="assets/tailscale.svg" alt="Tailscale" width="80" height="80"/><br/>
-        <b>Tailscale</b>
-      </div>
-      <div style="display: inline-block; text-align: center; margin: 10px;">
-        <img src="assets/caddy.svg" alt="Caddy" width="80" height="80"/><br/>
-        <b>Caddy</b>
-      </div>
-      <div style="display: inline-block; text-align: center; margin: 10px;">
-        <img src="assets/traefik-proxy.svg" alt="Traefik" width="80" height="80"/><br/>
-        <b>Traefik</b>
-      </div>
+      <table>
+        <tr>
+          <td align="center"><img src="assets/cloudflare.svg" alt="Cloudflare" width="80" height="80"/><br/><b>Cloudflare</b></td>
+          <td align="center"><img src="assets/tailscale.svg" alt="Tailscale" width="80" height="80"/><br/><b>Tailscale</b></td>
+          <td align="center"><img src="assets/caddy.svg" alt="Caddy" width="80" height="80"/><br/><b>Caddy</b></td>
+          <td align="center"><img src="assets/traefik-proxy.svg" alt="Traefik" width="80" height="80"/><br/><b>Traefik</b></td>
+        </tr>
+      </table>
     </td>
   </tr>
   <tr>
     <td align="center" width="200"><b>Cloud & DevOps</b></td>
     <td align="center">
-      <div style="display: inline-block; text-align: center; margin: 10px;">
-        <img src="assets/aws.svg" alt="AWS" width="80" height="80"/><br/>
-        <b>AWS</b>
-      </div>
-      <div style="display: inline-block; text-align: center; margin: 10px;">
-        <img src="assets/fluxcd.svg" alt="FluxCD" width="80" height="80"/><br/>
-        <b>FluxCD</b>
-      </div>
+      <table>
+        <tr>
+          <td align="center"><img src="assets/aws.svg" alt="AWS" width="80" height="80"/><br/><b>AWS</b></td>
+          <td align="center"><img src="assets/fluxcd.svg" alt="FluxCD" width="80" height="80"/><br/><b>FluxCD</b></td>
+        </tr>
+      </table>
     </td>
   </tr>
   <tr>
     <td align="center" width="200"><b>Monitoring & Observability</b></td>
     <td align="center">
-      <div style="display: inline-block; text-align: center; margin: 10px;">
-        <img src="assets/prometheus.svg" alt="Prometheus" width="80" height="80"/><br/>
-        <b>Prometheus</b>
-      </div>
-      <div style="display: inline-block; text-align: center; margin: 10px;">
-        <img src="assets/grafana.svg" alt="Grafana" width="80" height="80"/><br/>
-        <b>Grafana</b>
-      </div>
-      <div style="display: inline-block; text-align: center; margin: 10px;">
-        <img src="assets/grafanaloki.svg" alt="Loki" width="80" height="80"/><br/>
-        <b>Loki</b>
-      </div>
+      <table>
+        <tr>
+          <td align="center"><img src="assets/prometheus.svg" alt="Prometheus" width="80" height="80"/><br/><b>Prometheus</b></td>
+          <td align="center"><img src="assets/grafana.svg" alt="Grafana" width="80" height="80"/><br/><b>Grafana</b></td>
+          <td align="center"><img src="assets/grafanaloki.svg" alt="Loki" width="80" height="80"/><br/><b>Loki</b></td>
+        </tr>
+      </table>
     </td>
   </tr>
   <tr>
     <td align="center" width="200"><b>Applications & Databases</b></td>
     <td align="center">
-      <div style="display: inline-block; text-align: center; margin: 10px;">
-        <img src="assets/n8n.svg" alt="n8n" width="80" height="80"/><br/>
-        <b>n8n</b>
-      </div>
-      <div style="display: inline-block; text-align: center; margin: 10px;">
-        <img src="assets/postgresql.svg" alt="PostgreSQL" width="80" height="80"/><br/>
-        <b>PostgreSQL</b>
-      </div>
+      <table>
+        <tr>
+          <td align="center"><img src="assets/n8n.svg" alt="n8n" width="80" height="80"/><br/><b>n8n</b></td>
+          <td align="center"><img src="assets/postgresql.svg" alt="PostgreSQL" width="80" height="80"/><br/><b>PostgreSQL</b></td>
+        </tr>
+      </table>
     </td>
   </tr>
 </table>
