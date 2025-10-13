@@ -1,0 +1,2 @@
+---
+tailscale_auth_key: "{{ lookup('amazon.aws.aws_ssm', '/homelab/tailscale_auth_key') }}"

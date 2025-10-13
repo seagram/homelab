@@ -1,0 +1,47 @@
+services:
+  homelab:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/workspace:cached
+      - ../.talos:/root/.talos:delegated
+      - ../.kube:/root/.kube:delegated
+      - terraform-cache:/workspace/terraform/.terraform
+      - ansible-cache:/workspace/ansible/.ansible
+    environment:
+      # SSH Agent for Tailscale SSH
+      - SSH_AUTH_SOCK=/ssh-agent
+      # AWS
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+      # Terraform backend
+      - TF_BACKEND_BUCKET=${TF_BACKEND_BUCKET}
+      - TF_BACKEND_KEY=${TF_BACKEND_KEY}
+      - TF_BACKEND_REGION=${TF_BACKEND_REGION}
+      # Ansible
+      - ANSIBLE_CONFIG=/workspace/ansible/ansible.cfg
+      - ANSIBLE_HOST_KEY_CHECKING=False
+      # Terraform
+      - TF_VAR_tailscale_auth_key=${TAILSCALE_AUTH_KEY}
+      - TF_VAR_tailscale_magic_dns_domain=${TAILSCALE_MAGIC_DNS_DOMAIN}
+      - TF_VAR_cloudflare_provider_api_token=${CLOUDFLARE_PROVIDER_API_TOKEN}
+      - TF_VAR_cloudflare_api_token=${CLOUDFLARE_API_TOKEN}
+      - TF_VAR_cloudflare_zone_id=${CLOUDFLARE_ZONE_ID}
+      - TF_VAR_proxmox_api_url=${PROXMOX_API_URL}
+      - TF_VAR_proxmox_api_token_id=${PROXMOX_API_TOKEN_ID}
+      - TF_VAR_proxmox_api_token_secret=${PROXMOX_API_TOKEN_SECRET}
+      - TF_VAR_proxmox_root_password=${PROXMOX_ROOT_PASSWORD}
+      - TF_VAR_talos_version=${TALOS_VERSION:-v1.11.2}
+      - TF_VAR_talos_nameserver=${TALOS_NAMESERVER}
+    env_file:
+      - ../.env
+    working_dir: /workspace
+    network_mode: host
+    stdin_open: true
+    tty: true
+
+volumes:
+  terraform-cache:
+  ansible-cache:

@@ -1,0 +1,40 @@
+---
+- name: Update apt package cache
+  apt:
+    update_cache: yes
+    cache_valid_time: "{{ apt_cache_valid_time }}"
+  become: true
+  register: apt_cache_update
+
+- name: Upgrade all apt packages
+  apt:
+    upgrade: "{{ apt_upgrade_type }}"
+    autoremove: "{{ apt_autoremove }}"
+    autoclean: "{{ apt_autoclean }}"
+    force_apt_get: "{{ apt_force_apt_get }}"
+  become: true
+  register: apt_upgrade_result
+  when: system_updates_enabled
+
+- name: Check if Proxmox is installed
+  ansible.builtin.stat:
+    path: /usr/bin/pveupgrade
+  register: pveupgrade_exists
+
+- name: Upgrade Proxmox VE packages
+  ansible.builtin.command:
+    cmd: "pveupgrade {{ '--simulate' if pveupgrade_simulate else '' }}"
+  become: true
+  register: proxmox_upgrade_result
+  when:
+    - proxmox_upgrade_enabled
+    - pveupgrade_exists.stat.exists
+  changed_when: "'No packages will be upgraded' not in proxmox_upgrade_result.stdout"
+
+- name: Display Proxmox upgrade status
+  ansible.builtin.debug:
+    msg: "{{ proxmox_upgrade_result.stdout_lines }}"
+  when:
+    - proxmox_upgrade_enabled
+    - pveupgrade_exists.stat.exists
+    - proxmox_upgrade_result is defined

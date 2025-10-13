@@ -1,0 +1,22 @@
+---
+- name: Configure Proxmox Host
+  hosts: proxmox-ssh
+  roles:
+    - role: disable-power-off
+      tags: [configure]
+    - role: update-apt
+      tags: [configure]
+    - role: tailscale
+      tags: [configure]
+
+- name: Install Reverse Proxy
+  hosts: proxmox-tailscale
+  roles:
+    - role: reverse-proxy
+      tags: [reverse-proxy]
+
+- name: Download Talos Linux ISO
+  hosts: proxmox-tailscale
+  roles:
+    - role: talos-iso
+      tags: [talos-iso]

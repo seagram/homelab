@@ -1,0 +1,7 @@
+---
+talos_version: "{{ lookup('env', 'TALOS_VERSION') }}"
+talos_arch: "amd64"
+talos_schematic_id: "{{ lookup('env', 'TALOS_SCHEMATIC_ID') }}"
+talos_iso_filename: "talos-{{ talos_version }}-nocloud-{{ talos_arch }}.iso"
+talos_download_url: "https://factory.talos.dev/image/{{ talos_schematic_id }}/{{ talos_version }}/nocloud-{{ talos_arch }}.iso"
+proxmox_iso_storage_path: "/var/lib/vz/template/iso"

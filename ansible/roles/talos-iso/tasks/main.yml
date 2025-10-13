@@ -1,0 +1,33 @@
+---
+- name: Ensure ISO storage directory exists
+  ansible.builtin.file:
+    path: "{{ proxmox_iso_storage_path }}"
+    state: directory
+    mode: "0755"
+
+- name: Check if Talos ISO already exists
+  ansible.builtin.stat:
+    path: "{{ proxmox_iso_storage_path }}/{{ talos_iso_filename }}"
+  register: talos_iso_stat
+
+- name: Download Talos ISO from Image Factory
+  ansible.builtin.get_url:
+    url: "{{ talos_download_url }}"
+    dest: "{{ proxmox_iso_storage_path }}/{{ talos_iso_filename }}"
+    mode: "0644"
+  when: not talos_iso_stat.stat.exists
+  register: talos_iso_download
+
+- name: Display download status
+  ansible.builtin.debug:
+    msg: "Talos ISO {{ 'downloaded successfully' if talos_iso_download.changed else 'already exists' }}"
+
+- name: List ISO files in storage
+  ansible.builtin.command:
+    cmd: ls -lh {{ proxmox_iso_storage_path }}
+  register: iso_list
+  changed_when: false
+
+- name: Show available ISOs
+  ansible.builtin.debug:
+    var: iso_list.stdout_lines
