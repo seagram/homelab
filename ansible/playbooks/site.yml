@@ -15,6 +15,15 @@
     - role: reverse-proxy
       tags: [reverse-proxy]
 
+- name: Install Tailscale
+  hosts:
+    - control-node-tailscale
+    - worker-node-1-tailscale
+    - worker-node-2-tailscale
+  roles:
+    - role: tailscale
+      tags: [k3s]
+
 - name: Configure k3s Nodes
   hosts: control-node-ssh,worker-node-1-ssh,worker-node-2-ssh
   become: true
