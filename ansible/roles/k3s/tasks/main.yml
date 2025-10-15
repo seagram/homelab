@@ -1,0 +1,34 @@
+---
+- name: Ensure .kube directory exists in repo root
+  ansible.builtin.file:
+    path: "{{ playbook_dir }}/../../.kube"
+    state: directory
+    mode: "0700"
+  delegate_to: localhost
+  run_once: true
+  become: false
+
+- name: Fetch kubeconfig from control plane
+  ansible.builtin.fetch:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: "{{ kubeconfig_local_path }}"
+    flat: yes
+  when: inventory_hostname == groups['server'][0]
+  become: true
+
+- name: Update kubeconfig server address
+  ansible.builtin.replace:
+    path: "{{ kubeconfig_local_path }}"
+    regexp: "https://127.0.0.1:6443"
+    replace: "https://{{ k3s_server_host }}:{{ k3s_api_port }}"
+  delegate_to: localhost
+  run_once: true
+  become: false
+
+- name: Set kubeconfig file permissions
+  ansible.builtin.file:
+    path: "{{ kubeconfig_local_path }}"
+    mode: "0600"
+  delegate_to: localhost
+  run_once: true
+  become: false
