@@ -19,6 +19,18 @@ terraform {
       source  = "cloudflare/cloudflare"
       version = "~> 5"
     }
+    tailscale = {
+      source = "tailscale/tailscale"
+      version = "0.22.0"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "3.0.2"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "2.38.0"
+    }
   }
 }
 
@@ -28,6 +40,21 @@ provider "aws" {
 
 provider "cloudflare" {
   api_token = var.cloudflare_api_token
+}
+
+
+provider "tailscale" {
+  api_key = var.tailscale_api_token
+}
+
+provider "kubernetes" {
+  config_path    = "../.kube/config"
+}
+
+provider "helm" {
+  kubernetes = {
+    config_path = "../.kube/config"
+  }
 }
 
 provider "proxmox" {

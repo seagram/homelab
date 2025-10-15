@@ -16,3 +16,16 @@ module "proxmox" {
   source         = "./modules/proxmox"
   root_password = var.root_password
 }
+
+module "tailscale" {
+  source = "./modules/tailscale"
+}
+
+module "kubernetes" {
+  source = "./modules/kubernetes"
+
+  tailscale_oauth_id  = module.tailscale.tailscale_oauth_id
+  tailscale_oauth_key = module.tailscale.tailscale_oauth_key
+
+  depends_on = [module.tailscale]
+}

@@ -47,3 +47,8 @@ variable "k3s_token" {
   type = string
   sensitive = true
 }
+
+variable "tailscale_api_token" {
+  type = string
+  sensitive = true
+}
