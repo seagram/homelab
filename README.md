@@ -16,7 +16,6 @@ A homelab for self-hosting open source software.
 ## Infrastructure Stack
 
 <div align="center">
-
 <table>
   <tr>
     <td align="center" width="200"><b>Infrastructure & Orchestration</b></td>
@@ -37,7 +36,7 @@ A homelab for self-hosting open source software.
       <table>
         <tr>
           <td align="center"><img src="assets/proxmox.svg" alt="Proxmox" width="80" height="80"/><br/><b>Proxmox</b></td>
-          <td align="center"><img src="assets/linux.svg" alt="Talos Linux" width="80" height="80"/><br/><b>Talos Linux</b></td>
+          <td align="center"><img src="assets/ubuntu.svg" alt="Ubuntu" width="80" height="80"/><br/><b>Ubuntu Linux</b></td>
         </tr>
       </table>
     </td>
@@ -85,16 +84,12 @@ A homelab for self-hosting open source software.
         <tr>
           <td align="center"><img src="assets/n8n.svg" alt="n8n" width="80" height="80"/><br/><b>n8n</b></td>
           <td align="center"><img src="assets/postgresql.svg" alt="PostgreSQL" width="80" height="80"/><br/><b>PostgreSQL</b></td>
+          <td align="center"><img src="assets/commafeed.svg" alt="Commafeed" width="80" height="80"/><br/><b>Commafeed</b></td>
+          <td align="center"><img src="assets/dokploy.svg" alt="Dokploy" width="80" height="80"/><br/><b>Dokploy</b></td>
+          <td align="center"><img src="assets/portainer.svg" alt="Portainer" width="80" height="80"/><br/><b>Portainer</b></td>
         </tr>
       </table>
     </td>
   </tr>
 </table>
-
 </div>
-
-## Design Principles
-
-- **100% declaritive** - Use IaC to ensure a fully automatable and reproducable workflow.
-- **Single-dependency approach** - The only required dependency is Docker.
-- **Zero-trust networking** - No passwords or passkeys. All authentication encrypted through a VPN.

@@ -1,90 +1,96 @@
 terraform {
   required_providers {
     proxmox = {
-      source  = "Telmate/proxmox"
-      version = "3.0.2-rc04"
+      source  = "bpg/proxmox"
+      version = "0.85.0"
     }
   }
 }
 
 locals {
-  talos_gateway      = "10.0.0.1"
-  talos_network_cidr = "24"
-
-  talos_nodes = {
+  vms = {
     control-plane = {
-      name   = "talos-control-plane"
-      vmid   = 100
-      ip     = "10.0.0.11"
-      role   = "controlplane"
-      memory = 4096
-      cores  = 2
+      vm_id      = 101
+      name       = "control-plane"
+      ip_address = "10.0.0.11/24"
+      tags       = ["terraform"]
+      cores      = 2
+      memory     = 4096
     }
-    worker-1 = {
-      name   = "talos-worker-node-1"
-      vmid   = 101
-      ip     = "10.0.0.12"
-      role   = "worker"
-      memory = 4096
-      cores  = 2
+    worker-node-1 = {
+      vm_id      = 102
+      name       = "worker-node-1"
+      ip_address = "10.0.0.12/24"
+      tags       = ["terraform"]
+      cores      = 2
+      memory     = 4096
     }
-    worker-2 = {
-      name   = "talos-worker-node-2"
-      vmid   = 102
-      ip     = "10.0.0.13"
-      role   = "worker"
-      memory = 4096
-      cores  = 2
+    worker-node-2 = {
+      vm_id      = 103
+      name       = "worker-node-2"
+      ip_address = "10.0.0.13/24"
+      tags       = ["terraform"]
+      cores      = 2
+      memory     = 4096
     }
   }
 }
 
-resource "proxmox_vm_qemu" "talos_nodes" {
-  for_each = local.talos_nodes
+resource "proxmox_virtual_environment_download_file" "ubuntu" {
+  content_type = "iso"
+  datastore_id = "local"
+  node_name    = "proxmox"
+  file_name    = "jammy-server-cloudimg-amd64.img"
+  url          = "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
+}
 
-  name        = each.value.name
-  target_node = "proxmox"
-  vmid        = each.value.vmid
-  memory      = each.value.memory
+resource "proxmox_virtual_environment_vm" "vms" {
+  for_each = local.vms
+
+  name            = each.value.name
+  tags            = each.value.tags
+  vm_id           = each.value.vm_id
+  node_name       = "proxmox"
+  stop_on_destroy = true
 
   cpu {
     cores = each.value.cores
-    type  = "host"
+    type  = "x86-64-v2-AES"
   }
 
-  disks {
-    ide {
-      ide2 {
-        cdrom {
-          iso = "local:iso/talos-${var.talos_version}-nocloud-amd64.iso"
-        }
-      }
-      ide3 {
-        cloudinit {
-          storage = "local-lvm"
-        }
-      }
-    }
-    scsi {
-      scsi0 {
-        disk {
-          storage = "local-lvm"
-          size    = "40G"
-        }
-      }
-    }
+  memory {
+    dedicated = each.value.memory
+    floating  = each.value.memory
   }
 
-  network {
-    id     = 0
-    model  = "virtio"
+  network_device {
     bridge = "vmbr0"
   }
 
-  ipconfig0  = "ip=${each.value.ip}/${local.talos_network_cidr},gw=${local.talos_gateway}"
-  nameserver = var.talos_nameserver
+  disk {
+    datastore_id = "local-lvm"
+    file_id      = proxmox_virtual_environment_download_file.ubuntu.id
+    interface    = "virtio0"
+    iothread     = true
+    discard      = "on"
+    size         = 20
+  }
 
-  agent = 0
+  initialization {
+    ip_config {
+      ipv4 {
+        address = each.value.ip_address
+        gateway = "10.0.0.1"
+      }
+    }
 
-  tags = each.value.role
+    dns {
+      servers = ["8.8.8.8", "8.8.4.4"]
+    }
+
+    user_account {
+      username = "ubuntu"
+      password = var.root_password
+    }
+  }
 }

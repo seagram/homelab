@@ -3,11 +3,11 @@
   hosts: proxmox-ssh
   roles:
     - role: disable-power-off
-      tags: [configure]
+      tags: [configure-proxmox]
     - role: update-apt
-      tags: [configure]
+      tags: [configure-proxmox]
     - role: tailscale
-      tags: [configure]
+      tags: [configure-proxmox]
 
 - name: Install Reverse Proxy
   hosts: proxmox-tailscale
@@ -15,8 +15,9 @@
     - role: reverse-proxy
       tags: [reverse-proxy]
 
-- name: Download Talos Linux ISO
-  hosts: proxmox-tailscale
+- name: Configure k3s Nodes
+  hosts: control-node-ssh,worker-node-1-ssh,worker-node-2-ssh
+  become: true
   roles:
-    - role: talos-iso
-      tags: [talos-iso]
+    - role: tailscale
+      tags: [configure-k3s]

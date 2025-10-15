@@ -1,5 +1,8 @@
 terraform {
   backend "s3" {
+    bucket="seagram-terraform-state-bucket"
+    key="homelab/terraform.tfstate"
+    region="us-east-1"
     use_lockfile = true
     encrypt      = true
   }
@@ -9,8 +12,8 @@ terraform {
       version = "~> 6.0"
     }
     proxmox = {
-      source  = "Telmate/proxmox"
-      version = "3.0.2-rc04"
+      source  = "bpg/proxmox"
+      version = "0.85.0"
     }
     cloudflare = {
       source  = "cloudflare/cloudflare"
@@ -24,12 +27,20 @@ provider "aws" {
 }
 
 provider "cloudflare" {
-  api_token = var.cloudflare_provider_api_token
+  api_token = var.cloudflare_api_token
 }
 
 provider "proxmox" {
-  pm_api_url          = var.proxmox_api_url
-  pm_api_token_id     = var.proxmox_api_token_id
-  pm_api_token_secret = var.proxmox_api_token_secret
-  pm_tls_insecure     = true
+  endpoint  = var.proxmox_endpoint
+  api_token = var.proxmox_api_token
+  insecure  = true
+
+  ssh {
+    agent    = true
+    username = "root"
+    node {
+      name    = "proxmox"
+      address = "100.85.178.8"
+    }
+  }
 }

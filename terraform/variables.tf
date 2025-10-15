@@ -23,35 +23,22 @@ variable "cloudflare_zone_id" {
   sensitive = true
 }
 
-variable "proxmox_api_url" {
-  type = string
-}
-
-variable "proxmox_api_token_id" {
+variable "proxmox_endpoint" {
   type      = string
   sensitive = true
 }
 
-variable "proxmox_api_token_secret" {
+variable "proxmox_api_token" {
   type      = string
   sensitive = true
-}
-
-variable "proxmox_root_password" {
-  type      = string
-  sensitive = true
-}
-
-variable "talos_version" {
-  type    = string
-  default = "v1.11.2"
-}
-
-variable "talos_nameserver" {
-  type = string
 }
 
 variable "tags" {
   type    = map(string)
   default = {}
+}
+
+variable "root_password" {
+  type      = string
+  sensitive = true
 }

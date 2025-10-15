@@ -6,7 +6,6 @@ env_file := ".env"
 dc := "docker compose -f " + compose_file + " --env-file " + env_file
 homelab := dc + " run --rm homelab"
 bash := homelab + " bash -c"
-tf := "cd terraform && terraform"
 playbook := "ansible-playbook ansible/playbooks/site.yml"
 
 # ===========================================
@@ -43,44 +42,6 @@ shell: check-docker check-env build
     {{homelab}} bash
 
 # ===========================================
-# Terraform
-# ===========================================
-
-terraform-init: check-docker check-env build
-    {{bash}} "{{tf}} init \
-        -backend-config=\"bucket=\$TF_BACKEND_BUCKET\" \
-        -backend-config=\"key=\$TF_BACKEND_KEY\" \
-        -backend-config=\"region=\$TF_BACKEND_REGION\""
-
-terraform-migrate: check-docker check-env build
-    {{bash}} "{{tf}} init \
-        -backend-config=\"bucket=\$TF_BACKEND_BUCKET\" \
-        -backend-config=\"key=\$TF_BACKEND_KEY\" \
-        -backend-config=\"region=\$TF_BACKEND_REGION\" \
-        -migrate-state"
-
-terraform-validate: check-docker check-env build
-    {{bash}} "{{tf}} validate"
-
-terraform-fmt: check-docker check-env build
-    {{bash}} "{{tf}} fmt -recursive"
-
-terraform-plan: terraform-init
-    {{bash}} "{{tf}} plan"
-
-terraform-apply: terraform-init
-    {{bash}} "{{tf}} apply --auto-approve"
-
-terraform-destroy: terraform-init
-    {{bash}} "{{tf}} destroy"
-
-terraform-output: terraform-init
-    {{bash}} "{{tf}} output"
-
-terraform-module module: terraform-init
-    {{bash}} "{{tf}} apply -target=module.{{module}} --auto-approve"
-
-# ===========================================
 # Ansible
 # ===========================================
 
@@ -95,9 +56,6 @@ ansible-configure: check-docker check-env build
 
 ansible-reverse-proxy: check-docker check-env build
     {{bash}} "{{playbook}} --limit proxmox-tailscale --tags reverse-proxy"
-
-ansible-talos-iso: check-docker check-env build
-    {{bash}} "{{playbook}} --limit proxmox-tailscale --tags talos-iso"
 
 # ===========================================
 # Other
