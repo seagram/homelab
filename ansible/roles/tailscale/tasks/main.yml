@@ -29,75 +29,8 @@
   ansible.builtin.command: tailscale up --authkey={{ tailscale_auth_key }} --ssh
   when: "'not logged in' in tailscale_status.stderr or tailscale_status.rc != 0"
 
-- name: Disable SSH password authentication
-  become: true
-  ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: "^#?PasswordAuthentication="
-    line: "PasswordAuthentication=no"
-    backup: yes
-
 - name: Restart SSH service
   become: true
   ansible.builtin.systemd:
     name: ssh
     state: restarted
-
-- name: Install UFW
-  become: true
-  ansible.builtin.apt:
-    name: ufw
-    state: present
-
-- name: Reset UFW to defaults
-  become: true
-  community.general.ufw:
-    state: reset
-
-- name: Allow SSH access only through Tailscale
-  become: true
-  community.general.ufw:
-    rule: allow
-    interface: tailscale0
-    port: "22"
-    proto: tcp
-    direction: in
-
-- name: Set UFW default incoming policy to deny
-  become: true
-  community.general.ufw:
-    direction: incoming
-    policy: deny
-
-- name: Set UFW default outgoing policy to allow
-  become: true
-  community.general.ufw:
-    direction: outgoing
-    policy: allow
-
-- name: Allow k3s API server port (6443/tcp)
-  become: true
-  community.general.ufw:
-    rule: allow
-    port: "6443"
-    proto: tcp
-    comment: "k3s API server"
-
-- name: Allow k3s pod network (10.42.0.0/16)
-  become: true
-  community.general.ufw:
-    rule: allow
-    from_ip: 10.42.0.0/16
-    comment: "k3s pod network"
-
-- name: Allow k3s service network (10.43.0.0/16)
-  become: true
-  community.general.ufw:
-    rule: allow
-    from_ip: 10.43.0.0/16
-    comment: "k3s service network"
-
-- name: Enable UFW
-  become: true
-  community.general.ufw:
-    state: enabled
