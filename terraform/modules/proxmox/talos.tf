@@ -1,7 +1,4 @@
 locals {
-  talos_version = "v1.11.3"
-  schematic_id = "7d4c31cbd96db9f90c874990697c523482b2bae27fb4631d5583dcd9c281b1ff"
-
   vms = {
     control-plane = {
       vm_id      = 101
@@ -19,19 +16,53 @@ locals {
       ip_address = "${var.worker_node_2_ip}"
     }
   }
+
+}
+
+data "talos_image_factory_extensions_versions" "versions" {
+  # Specifies which talos linux extensions to include within an ISO image
+  talos_version = var.talos_version
+  filters = {
+    names = ["qemu-guest-agent", "tailscale"]
+  }
+}
+
+resource "talos_image_factory_schematic" "schematic" {
+  # Creates a custom talos linux ISO for each VM
+  # Assigns at static ip for each with kernel command line arguments
+  for_each = local.vms
+  schematic = yamlencode(
+    {
+      customization = {
+        extraKernelArgs = [
+          "ip=${each.value.ip_address}::${var.default_gateway}:255.255.255.0::eth0:none"
+        ]
+        systemExtensions = {
+          officialExtensions = data.talos_image_factory_extensions_versions.versions.extensions_info[*].name
+        }
+      }
+    }
+  )
+}
+
+data "talos_image_factory_urls" "this" {
+  # Creates a URL for each custom ISO image for proxmox to download
+  for_each = local.vms
+  talos_version = var.talos_version
+  schematic_id  = talos_image_factory_schematic.schematic[each.key].id
+  platform      = "nocloud"
 }
 
 resource "proxmox_virtual_environment_download_file" "talos_image" {
-  # Hardware Type: Cloud Server
-  # System Extensions: [qemu-guest-agent, tailscale]
+  for_each     = local.vms
   content_type = "iso"
   datastore_id = "local"
-  node_name = "proxmox"
-  file_name = "talos-${local.talos_version}-nocloud-amd64.iso"
-  url = "https://factory.talos.dev/image/${local.schematic_id}/${local.talos_version}/nocloud-amd64.iso"
-  overwrite = false
+  node_name    = "proxmox"
+  file_name    = "talos-${var.talos_version}-${each.key}-nocloud-amd64.iso"
+  url          = data.talos_image_factory_urls.this[each.key].urls.iso
+  overwrite = true
+  overwrite_unmanaged = true
 }
-
 
 resource "proxmox_virtual_environment_vm" "virtual_machines" {
   for_each = local.vms
@@ -57,28 +88,15 @@ resource "proxmox_virtual_environment_vm" "virtual_machines" {
     bridge = "vmbr0"
   }
 
+  cdrom {
+    file_id = proxmox_virtual_environment_download_file.talos_image[each.key].id
+  }
+
   disk {
     datastore_id = "local-lvm"
-    file_id      = proxmox_virtual_environment_download_file.talos_image.id
     interface    = "virtio0"
     iothread     = true
     discard      = "on"
     size         = 20
-  }
-
-  initialization {
-    datastore_id = "local-lvm"
-    ip_config {
-      ipv4 {
-        address = "${each.value.ip_address}/24"
-        gateway = var.default_gateway
-      }
-      ipv6 {
-        address = "dhcp"
-      }
-    }
-    dns {
-      servers = ["8.8.8.8", "8.8.4.4"]
-    }
   }
 }

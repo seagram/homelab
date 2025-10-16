@@ -18,7 +18,6 @@ variable "cloudflare_zone_id" {
   sensitive = true
 }
 
-
 variable "proxmox_api_token" {
   type      = string
   sensitive = true
@@ -57,4 +56,9 @@ variable "worker_node_1_ip" {
 variable "worker_node_2_ip" {
     type = string
     default = "10.0.0.13"
+}
+
+variable "talos_version" {
+  type = string
+  default = "v1.11.3"
 }

@@ -20,5 +20,16 @@ module "proxmox" {
   control_plane_ip = var.control_plane_ip
   worker_node_1_ip = var.worker_node_1_ip
   worker_node_2_ip = var.worker_node_2_ip
+  talos_version = var.talos_version
   depends_on = [ module.tailscale, module.secrets ]
+}
+
+module "talos" {
+  source = "./modules/talos"
+  default_gateway = var.default_gateway
+  control_plane_ip = var.control_plane_ip
+  worker_node_1_ip = var.worker_node_1_ip
+  worker_node_2_ip = var.worker_node_2_ip
+  talos_version = var.talos_version
+  depends_on = [ module.proxmox ]
 }

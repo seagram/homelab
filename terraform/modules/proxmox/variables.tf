@@ -18,3 +18,7 @@ variable "worker_node_1_ip" {
 variable "worker_node_2_ip" {
     type = string
 }
+
+variable "talos_version" {
+  type = string
+}

@@ -1,12 +1,4 @@
 # ===========================================
-# Variables
-# ===========================================
-env_file := ".env"
-playbook := "cd ansible && ansible-playbook playbooks/site.yml"
-kubeconfig := justfile_directory() + "/.kube/config"
-export KUBECONFIG := kubeconfig
-
-# ===========================================
 # Dependencies
 # ===========================================
 
@@ -27,52 +19,8 @@ check-dependencies:
     done
 
 # ===========================================
-# Ansible
-# ===========================================
-
-ansible-collections:
-    cd ansible && ansible-galaxy collection install -r requirements.yml
-
-ansible-ping:
-    cd ansible && ansible all -m ping -i inventory
-
-ansible-configure:
-    {{playbook}} --limit proxmox-ssh --tags configure
-
-ansible-reverse-proxy:
-    {{playbook}} --limit proxmox-tailscale --tags reverse-proxy
-
-# ansible-k3s: check-ansible check-env
-#     {{playbook}} --limit k3s --tags k3s
-
-ansible-k3s:
-    cd ansible && ansible-playbook playbooks/k3s.yml -i inventory/hosts.yml
-
-ansible-k3s-upgrade:
-    cd ansible && ansible-playbook k3s.orchestration.upgrade -i inventory/hosts.yml
-
-
-# ===========================================
-# kubectl
-# ===========================================
-get-pods:
-    kubectl get pods
-
-get-nodes:
-    kubectl get nodes
-
-# ===========================================
 # Other
 # ===========================================
-
-ssh-proxmox:
-    ssh root@proxmox
-ssh-control-plane:
-    ssh ubuntu@control-plane
-ssh-worker-node-1:
-    ssh ubuntu@worker-node-1
-ssh-worker-node-2:
-    ssh ubuntu@worker-node-2
 
 create-proxmox-usb:
     #!/usr/bin/env bash
