@@ -3,11 +3,6 @@ variable "tailscale_auth_key" {
   sensitive = true
 }
 
-variable "root_password" {
-  type      = string
-  sensitive = true
-}
-
 variable "k3s_token" {
   type = string
   sensitive = true

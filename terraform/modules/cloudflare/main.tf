@@ -4,25 +4,25 @@ terraform {
       source  = "cloudflare/cloudflare"
       version = "~> 5"
     }
+    tailscale = {
+      source  = "tailscale/tailscale"
+      version = "0.22.0"
+    }
   }
 }
 
-resource "cloudflare_dns_record" "proxmox" {
-  zone_id = var.cloudflare_zone_id
-  name    = "proxmox"
-  ttl     = 1
-  type    = "CNAME"
-  comment = "proxmox dashboard via tailscale serve"
-  content = "proxmox.${var.tailscale_magic_dns_domain}"
-  proxied = false
+locals {
+  cnames = toset(["proxmox", "rss"])
 }
 
-resource "cloudflare_dns_record" "rss" {
+resource "cloudflare_dns_record" "cname" {
+  for_each = local.cnames
+
   zone_id = var.cloudflare_zone_id
-  name    = "rss"
+  name    = each.key
   ttl     = 1
   type    = "CNAME"
-  comment = "rss viewer via tailscale serve"
-  content = "rss.${var.tailscale_magic_dns_domain}"
+  comment = "CNAME for ${each.key}"
+  content = "${each.key}.${var.tailscale_magic_dns_domain}"
   proxied = false
 }

@@ -1,31 +1,24 @@
-module "secrets" {
-  source                = "./modules/secrets"
-  tailscale_auth_key    = var.tailscale_auth_key
-  root_password = var.root_password
-  k3s_token = var.k3s_token
-  tags                  = var.tags
-}
-
-module "cloudflare" {
-  source                     = "./modules/cloudflare"
-  tailscale_magic_dns_domain = var.tailscale_magic_dns_domain
-  cloudflare_zone_id         = var.cloudflare_zone_id
-}
-
-module "proxmox" {
-  source         = "./modules/proxmox"
-  root_password = var.root_password
-}
-
 module "tailscale" {
   source = "./modules/tailscale"
 }
 
-module "kubernetes" {
-  source = "./modules/kubernetes"
+module "secrets" {
+  source                = "./modules/secrets"
+  tailscale_auth_key    = var.tailscale_auth_key
+  k3s_token = var.k3s_token
+}
 
-  tailscale_oauth_id  = module.tailscale.tailscale_oauth_id
-  tailscale_oauth_key = module.tailscale.tailscale_oauth_key
+module "cloudflare" {
+  source             = "./modules/cloudflare"
+  cloudflare_zone_id = var.cloudflare_zone_id
+  tailscale_magic_dns_domain = var.tailscale_magic_dns_domain
+}
 
-  depends_on = [module.tailscale]
+module "proxmox" {
+  source         = "./modules/proxmox"
+  default_gateway = var.default_gateway
+  control_plane_ip = var.control_plane_ip
+  worker_node_1_ip = var.worker_node_1_ip
+  worker_node_2_ip = var.worker_node_2_ip
+  depends_on = [ module.tailscale, module.secrets ]
 }

@@ -15,6 +15,10 @@ terraform {
       source  = "bpg/proxmox"
       version = "0.85.0"
     }
+    random = {
+      source = "hashicorp/random"
+      version = "3.7.2"
+    }
     cloudflare = {
       source  = "cloudflare/cloudflare"
       version = "~> 5"
@@ -30,6 +34,10 @@ terraform {
     kubernetes = {
       source  = "hashicorp/kubernetes"
       version = "2.38.0"
+    }
+    talos = {
+      source = "siderolabs/talos"
+      version = "0.9.0"
     }
   }
 }
@@ -47,6 +55,8 @@ provider "tailscale" {
   api_key = var.tailscale_api_token
 }
 
+provider "random" {}
+
 provider "kubernetes" {
   config_path    = "../.kube/config"
 }
@@ -58,7 +68,7 @@ provider "helm" {
 }
 
 provider "proxmox" {
-  endpoint  = var.proxmox_endpoint
+  endpoint  = "https://proxmox.${var.tailscale_magic_dns_domain}:8006/api2/json"
   api_token = var.proxmox_api_token
   insecure  = true
 
@@ -67,7 +77,7 @@ provider "proxmox" {
     username = "root"
     node {
       name    = "proxmox"
-      address = "100.85.178.8"
+      address = data.tailscale_device.proxmox.addresses[0]
     }
   }
 }
