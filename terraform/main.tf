@@ -21,9 +21,6 @@ module "cloudflare" {
 module "proxmox-k3s" {
   source           = "./modules/proxmox-k3s"
   default_gateway  = var.default_gateway
-  control_plane_ip = var.control_plane_ip
-  worker_node_1_ip = var.worker_node_1_ip
-  worker_node_2_ip = var.worker_node_2_ip
   tailscale_auth_key = var.tailscale_auth_key
 }
 

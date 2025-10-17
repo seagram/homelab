@@ -11,19 +11,16 @@ locals {
   ubuntu_vms = {
     control-plane = {
       vm_id      = 101
-      ip_address = "${var.control_plane_ip}"
       cores      = 2
       memory     = 2048
     }
     worker-node-1 = {
       vm_id      = 102
-      ip_address = "${var.worker_node_1_ip}"
       cores      = 1
       memory     = 1024
     }
     worker-node-2 = {
       vm_id      = 103
-      ip_address = "${var.worker_node_2_ip}"
       cores      = 1
       memory     = 1024
     }
@@ -95,7 +92,7 @@ resource "proxmox_virtual_environment_vm" "vms" {
 
     ip_config {
       ipv4 {
-        address = "${each.value.ip_address}/24"
+        address = "dhcp"
         gateway = "${var.default_gateway}"
       }
     }
@@ -103,6 +100,5 @@ resource "proxmox_virtual_environment_vm" "vms" {
     dns {
       servers = ["8.8.8.8", "8.8.4.4", "1.1.1.1"]
     }
-
   }
 }
