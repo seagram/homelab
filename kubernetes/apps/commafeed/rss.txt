@@ -9,3 +9,5 @@ https://chameth.com/
 https://blog.damato.design/
 https://dlo.me
 https://blog.miguelgrinberg.com/
+https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/tecnologia/portada
+https://andrewkelley.me

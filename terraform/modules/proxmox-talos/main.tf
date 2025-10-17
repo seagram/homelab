@@ -1,3 +1,16 @@
+terraform {
+  required_providers {
+    proxmox = {
+      source  = "bpg/proxmox"
+      version = "0.85.0"
+    }
+    talos = {
+      source = "siderolabs/talos"
+      version = "0.9.0"
+    }
+  }
+}
+
 locals {
   vms = {
     control-plane = {
@@ -78,18 +91,41 @@ resource "proxmox_virtual_environment_vm" "virtual_machines" {
 
   memory {
     dedicated = 2048
+    floating = 0
   }
 
   agent {
     enabled = true
   }
 
+  stop_on_destroy = true
+
   network_device {
     bridge = "vmbr0"
+    model = "virtio"
+  }
+
+  operating_system {
+    type = "l26"
   }
 
   cdrom {
     file_id = proxmox_virtual_environment_download_file.talos_image[each.key].id
+  }
+
+  initialization {
+    ip_config {
+      ipv4 {
+        address = "${each.value.ip_address}/24"
+        gateway = "10.0.0.1"
+      }
+      ipv6 {
+        address = "dhcp"
+      }
+    }
+    dns {
+      servers = ["8.8.8.8", "8.8.4.4", "1.1.1.1"]
+    }
   }
 
   disk {

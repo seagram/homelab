@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 6.0"
+    }
+  }
+}
+
 locals {
   secrets = {
     tailscale_auth_key  = var.tailscale_auth_key
@@ -10,6 +19,5 @@ resource "aws_ssm_parameter" "secrets" {
   name     = "/homelab/${each.key}"
   type     = "SecureString"
   value    = each.value
-
   tags = var.tags
 }
