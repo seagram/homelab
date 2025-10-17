@@ -92,6 +92,11 @@ variable "k3s_token" {
   sensitive = true
 }
 
+variable "enable_kubernetes" {
+  type = bool
+  default = false
+}
+
 #############################
 #           talos           #
 #############################

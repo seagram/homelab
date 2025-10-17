@@ -21,7 +21,7 @@ resource "ansible_host" "proxmox_tailscale" {
   name   = "proxmox-tailscale"
   groups = ["tailscale"]
   variables = {
-    ansible_host       = "${module.tailscale.data.proxmox.addresses[0]}"
+    ansible_host       = "${var.tailscale_ips.proxmox_ip}"
     ansible_connection = "ssh"
   }
 }
@@ -29,13 +29,13 @@ resource "ansible_host" "proxmox_tailscale" {
 locals {
   ips = {
     control-plane = {
-      ip   = module.tailscale.data.control_plane.addresses[0]
+      ip   = var.tailscale_ips.control_plane_ip
     }
     worker-node-1 = {
-      ip   = module.tailscale.data.worker_node_1.addresses[0]
+      ip   = var.tailscale_ips.worker_node_1_ip
     }
     worker-node-2 = {
-      ip   = module.tailscale.data.worker_node_2.addresses[0]
+      ip   = var.tailscale_ips.worker_node_2_ip
     }
   }
 }

@@ -15,3 +15,7 @@ variable "default_gateway" {
 variable "proxmox_ip" {
     type = string
 }
+
+variable "tailscale_ips" {
+  type = any
+}

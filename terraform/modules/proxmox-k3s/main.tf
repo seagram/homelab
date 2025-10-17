@@ -57,12 +57,16 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
 }
 
 resource "proxmox_virtual_environment_vm" "vms" {
+  for_each = local.ubuntu_vms
   name            = each.key
   tags            = ["terraform"]
   vm_id           = each.value.vm_id
   node_name       = "proxmox"
-  agent = true
   stop_on_destroy = true
+
+  agent {
+    enabled = true
+  }
 
   cpu {
     cores = each.value.cores
@@ -80,7 +84,7 @@ resource "proxmox_virtual_environment_vm" "vms" {
 
   disk {
     datastore_id = "local-lvm"
-    file_id      = proxmox_virtual_environment_download_file.ubuntu[0].id
+    file_id      = proxmox_virtual_environment_download_file.ubuntu.id
     interface    = "virtio0"
     iothread     = true
     discard      = "on"

@@ -35,10 +35,12 @@ module "ansible" {
   default_gateway = var.default_gateway
   proxmox_ip = var.proxmox_ip
   root_password = var.root_password
+  tailscale_ips = module.tailscale.ips
   depends_on = [ module.tailscale ]
 }
 
 module "kubernetes" {
+  count            = var.enable_kubernetes ? 1 : 0
   source = "./modules/kubernetes"
   depends_on = [ module.ansible, module.tailscale ]
   tailscale_oauth_id = module.tailscale.tailscale_oauth_id
