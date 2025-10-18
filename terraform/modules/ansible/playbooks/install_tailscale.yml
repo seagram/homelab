@@ -1,0 +1,78 @@
+---
+- name: Install Tailscale
+  hosts: all
+  tasks:
+    - name: Check if GPG key already exists
+      ansible.builtin.stat:
+        path: /usr/share/keyrings/tailscale-archive-keyring.gpg
+      register: gpg_key_stat
+
+    - name: Download GPG key
+      become: true
+      ansible.builtin.get_url:
+        dest: /usr/share/keyrings/tailscale-archive-keyring.gpg
+        url: https://pkgs.tailscale.com/stable/ubuntu/noble.noarmor.gpg
+        mode: "0644"
+      when: not gpg_key_stat.stat.exists
+
+    - name: Check if tailscale repository is already configured
+      ansible.builtin.stat:
+        path: /etc/apt/sources.list.d/tailscale.list
+      register: repo_stat
+
+    - name: Add package signing repository
+      become: true
+      ansible.builtin.get_url:
+        dest: /etc/apt/sources.list.d/tailscale.list
+        url: https://pkgs.tailscale.com/stable/ubuntu/noble.tailscale-keyring.list
+        mode: "0644"
+      when: not repo_stat.stat.exists
+      register: repo_added
+
+    - name: Install tailscale package
+      become: true
+      ansible.builtin.apt:
+        name: tailscale
+        update_cache: "{{ repo_added is changed }}"
+        state: present
+
+    - name: Check if tailscale is already connected
+      ansible.builtin.command: tailscale status
+      register: tailscale_status
+      failed_when: false
+      changed_when: false
+
+    - name: Check if SSH is enabled in tailscale
+      ansible.builtin.shell: tailscale status --json | grep -q '"SSH":true'
+      register: tailscale_ssh_check
+      failed_when: false
+      changed_when: false
+      when: tailscale_status.rc == 0
+
+    - name: Connect to tailscale
+      become: true
+      ansible.builtin.command: tailscale up --authkey={{ tailscale_auth_key }} --ssh
+      when: >
+        tailscale_status.rc != 0 or
+        'not logged in' in tailscale_status.stderr or
+        (tailscale_ssh_check is defined and tailscale_ssh_check.rc != 0)
+      register: tailscale_connected
+
+    - name: Check SSH service status
+      ansible.builtin.systemd:
+        name: ssh
+      register: ssh_status
+      become: true
+
+    - name: Restart SSH service
+      become: true
+      ansible.builtin.systemd:
+        name: ssh
+        state: restarted
+      when: tailscale_connected is changed or not ssh_status.status.ActiveState == "active"
+
+    - name: Configure Tailscale serve
+      become: true
+      ansible.builtin.command: tailscale serve --bg https+insecure://localhost:8006
+      when: tailscale_status.rc == 0 or tailscale_connected is changed
+      changed_when: true

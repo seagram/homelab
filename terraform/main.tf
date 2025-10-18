@@ -35,7 +35,7 @@ module "ansible" {
   default_gateway = var.default_gateway
   proxmox_ip = var.proxmox_ip
   root_password = var.root_password
-  tailscale_ips = module.tailscale.ips
+  tailscale_auth_key = var.tailscale_auth_key
   depends_on = [ module.tailscale ]
 }
 

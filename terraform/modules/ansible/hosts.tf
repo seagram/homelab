@@ -1,3 +1,18 @@
+locals {
+  proxmox_tailscale_ip = data.tailscale_device.proxmox.addresses[0]
+  node_ips = {
+    control-plane = {
+      ip   = data.tailscale_device.control_plane.addresses[0]
+    }
+    worker-node-1 = {
+      ip = data.tailscale_device.worker_node_1.addresses[0]
+    }
+    worker-node-2 = {
+      ip = data.tailscale_device.worker_node_2.addresses[0]
+    }
+  }
+}
+
 #############################
 #            ssh            #
 #############################
@@ -21,27 +36,15 @@ resource "ansible_host" "proxmox_tailscale" {
   name   = "proxmox-tailscale"
   groups = ["tailscale"]
   variables = {
-    ansible_host       = "${var.tailscale_ips.proxmox_ip}"
+    ansible_host       = "${local.proxmox_tailscale_ip}"
     ansible_connection = "ssh"
   }
 }
 
-locals {
-  ips = {
-    control-plane = {
-      ip   = var.tailscale_ips.control_plane_ip
-    }
-    worker-node-1 = {
-      ip   = var.tailscale_ips.worker_node_1_ip
-    }
-    worker-node-2 = {
-      ip   = var.tailscale_ips.worker_node_2_ip
-    }
-  }
-}
+
 
 resource "ansible_host" "tailscale_hosts" {
-  for_each = local.ips
+  for_each = local.node_ips
   name   = "${each.key}-tailscale"
   groups = ["tailscale"]
   variables = {

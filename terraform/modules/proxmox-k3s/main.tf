@@ -32,8 +32,8 @@ resource "proxmox_virtual_environment_download_file" "ubuntu" {
   content_type = "iso"
   datastore_id = "local"
   node_name    = "proxmox"
-  file_name    = "noble-server-cloudimg-amd64.img"
-  url          = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
+  file_name = "noble-server-cloudimg-amd64.img"
+  url = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
 }
 
 resource "proxmox_virtual_environment_file" "cloud_config" {
@@ -66,6 +66,7 @@ resource "proxmox_virtual_environment_vm" "vms" {
 
   agent {
     enabled = true
+    timeout = "5m"
   }
 
   cpu {
@@ -91,8 +92,18 @@ resource "proxmox_virtual_environment_vm" "vms" {
     size         = 20
   }
 
+  operating_system {
+    type = "l26"
+  }
+
+
   initialization {
     user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
+
+    user_account {
+      username = "ubuntu"
+      password = "password"
+    }
 
     ip_config {
       ipv4 {

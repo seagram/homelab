@@ -16,6 +16,7 @@ variable "proxmox_ip" {
     type = string
 }
 
-variable "tailscale_ips" {
-  type = any
+variable "tailscale_auth_key" {
+  type      = string
+  sensitive = true
 }

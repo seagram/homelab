@@ -74,7 +74,7 @@ provider "helm" {
 }
 
 provider "proxmox" {
-  endpoint  = "https://proxmox.${var.tailscale_magic_dns_domain}:8006/api2/json"
+  endpoint  = "https://proxmox.javanese-octatonic.ts.net:8006/api2/json"
   api_token = var.proxmox_api_token
   insecure  = true
 
@@ -83,7 +83,7 @@ provider "proxmox" {
     username = "root"
     node {
       name    = "proxmox"
-      address = data.tailscale_device.proxmox.addresses[0]
+      address = "100.85.178.8"
     }
   }
 }

@@ -11,3 +11,6 @@ https://dlo.me
 https://blog.miguelgrinberg.com/
 https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/tecnologia/portada
 https://andrewkelley.me
+https://justin.searls.co/atom.xml
+https://treyhunner.com/atom.xml
+https://www.arp242.net/feed.xml
