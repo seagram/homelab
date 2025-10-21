@@ -19,6 +19,7 @@ module "cloudflare" {
 #############################
 
 module "proxmox-k3s" {
+  count            = var.enable_k3s ? 1 : 0
   source           = "./modules/proxmox-k3s"
   default_gateway  = var.default_gateway
   tailscale_auth_key = var.tailscale_auth_key

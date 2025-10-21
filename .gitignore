@@ -3,6 +3,7 @@
 **/*.tfstate
 **/*.tfstate.*
 **/terraform.tfvars
+terraform.auto.pkrvars.hcl
 **/*.bak
 **/.DS_Store
 .talos/

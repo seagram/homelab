@@ -87,6 +87,11 @@ variable "root_password" {
 #         kubernetes        #
 #############################
 
+variable "enable_k3s" {
+  type = bool
+  default = false
+}
+
 variable "k3s_token" {
   type = string
   sensitive = true
@@ -103,7 +108,7 @@ variable "enable_kubernetes" {
 
 variable "enable_talos" {
   type = bool
-  default = false
+  default = true
 }
 
 variable "talos_version" {

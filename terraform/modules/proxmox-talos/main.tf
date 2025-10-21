@@ -41,15 +41,12 @@ data "talos_image_factory_extensions_versions" "versions" {
 }
 
 resource "talos_image_factory_schematic" "schematic" {
-  # Creates a custom talos linux ISO for each VM
-  # Assigns at static ip for each with kernel command line arguments
-  for_each = local.vms
   schematic = yamlencode(
     {
       customization = {
-        extraKernelArgs = [
-          "ip=${each.value.ip_address}::${var.default_gateway}:255.255.255.0::eth0:none"
-        ]
+        # extraKernelArgs = [
+        #   "ip=${each.value.ip_address}::${var.default_gateway}:255.255.255.0::eth0:none"
+        # ]
         systemExtensions = {
           officialExtensions = data.talos_image_factory_extensions_versions.versions.extensions_info[*].name
         }
@@ -59,20 +56,17 @@ resource "talos_image_factory_schematic" "schematic" {
 }
 
 data "talos_image_factory_urls" "this" {
-  # Creates a URL for each custom ISO image for proxmox to download
-  for_each = local.vms
   talos_version = var.talos_version
-  schematic_id  = talos_image_factory_schematic.schematic[each.key].id
+  schematic_id  = talos_image_factory_schematic.schematic.id
   platform      = "nocloud"
 }
 
 resource "proxmox_virtual_environment_download_file" "talos_image" {
-  for_each     = local.vms
   content_type = "iso"
   datastore_id = "local"
   node_name    = "proxmox"
-  file_name    = "talos-${var.talos_version}-${each.key}-nocloud-amd64.iso"
-  url          = data.talos_image_factory_urls.this[each.key].urls.iso
+  file_name    = "talos-${var.talos_version}-nocloud-amd64.iso"
+  url          = data.talos_image_factory_urls.this.urls.iso
   overwrite = true
   overwrite_unmanaged = true
 }
@@ -96,13 +90,14 @@ resource "proxmox_virtual_environment_vm" "virtual_machines" {
 
   agent {
     enabled = true
+    trim = true
   }
 
   stop_on_destroy = true
 
   network_device {
     bridge = "vmbr0"
-    model = "virtio"
+    # model = "virtio"
   }
 
   operating_system {
@@ -110,13 +105,14 @@ resource "proxmox_virtual_environment_vm" "virtual_machines" {
   }
 
   cdrom {
-    file_id = proxmox_virtual_environment_download_file.talos_image[each.key].id
+    file_id = proxmox_virtual_environment_download_file.talos_image.id
   }
 
   initialization {
     ip_config {
       ipv4 {
         address = "${each.value.ip_address}/24"
+        # address = "dhcp"
         gateway = "10.0.0.1"
       }
       ipv6 {

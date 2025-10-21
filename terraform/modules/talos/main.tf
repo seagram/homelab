@@ -29,7 +29,7 @@ resource "talos_machine_configuration_apply" "this" {
     machine_configuration_input = data.talos_machine_configuration.this.machine_configuration
     node = "${var.control_plane_ip}"
     timeouts = {
-      create = "30s"
+      create = "2m"
     }
 }
 
@@ -37,4 +37,7 @@ resource "talos_machine_bootstrap" "this" {
     depends_on = [ talos_machine_configuration_apply.this ]
     client_configuration = data.talos_client_configuration.this.client_configuration
     node = "${var.control_plane_ip}"
+    timeouts = {
+      create = "2m"
+    }
 }

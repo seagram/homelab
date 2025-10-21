@@ -47,7 +47,15 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
   source_raw {
     data = <<-EOF
     #cloud-config
+    user: ubuntu
+    password: password
+    chpasswd:
+      expire: false
+    packages:
+      - qemu-guest-agent
     runcmd:
+      - ['systemctl', 'start', 'qemu-guest-agent']
+      - ['systemctl', 'enable', 'qemu-guest-agent']
       - ['sh', '-c', 'curl -fsSL https://tailscale.com/install.sh | sh']
       - ['tailscale', 'up', '--auth-key=${var.tailscale_auth_key}']
       - ['tailscale', 'set', '--ssh']
@@ -66,7 +74,7 @@ resource "proxmox_virtual_environment_vm" "vms" {
 
   agent {
     enabled = true
-    timeout = "5m"
+    timeout = "4m"
   }
 
   cpu {
@@ -100,10 +108,10 @@ resource "proxmox_virtual_environment_vm" "vms" {
   initialization {
     user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
 
-    user_account {
-      username = "ubuntu"
-      password = "password"
-    }
+    # user_account {
+    #   username = "ubuntu"
+    #   password = "password"
+    # }
 
     ip_config {
       ipv4 {
