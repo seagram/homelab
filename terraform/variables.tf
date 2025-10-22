@@ -106,11 +106,6 @@ variable "enable_kubernetes" {
 #           talos           #
 #############################
 
-variable "enable_talos" {
-  type = bool
-  default = true
-}
-
 variable "talos_version" {
   type = string
   default = "v1.11.3"

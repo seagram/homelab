@@ -33,7 +33,6 @@ locals {
 }
 
 data "talos_image_factory_extensions_versions" "versions" {
-  # Specifies which talos linux extensions to include within an ISO image
   talos_version = var.talos_version
   filters = {
     names = ["qemu-guest-agent", "tailscale"]
@@ -44,9 +43,6 @@ resource "talos_image_factory_schematic" "schematic" {
   schematic = yamlencode(
     {
       customization = {
-        # extraKernelArgs = [
-        #   "ip=${each.value.ip_address}::${var.default_gateway}:255.255.255.0::eth0:none"
-        # ]
         systemExtensions = {
           officialExtensions = data.talos_image_factory_extensions_versions.versions.extensions_info[*].name
         }
@@ -74,6 +70,7 @@ resource "proxmox_virtual_environment_download_file" "talos_image" {
 resource "proxmox_virtual_environment_vm" "virtual_machines" {
   for_each = local.vms
   name = each.value.name
+  vm_id = each.value.vm_id
   tags = ["terraform"]
   node_name = "proxmox"
   on_boot = true
@@ -97,7 +94,6 @@ resource "proxmox_virtual_environment_vm" "virtual_machines" {
 
   network_device {
     bridge = "vmbr0"
-    # model = "virtio"
   }
 
   operating_system {
@@ -127,8 +123,6 @@ resource "proxmox_virtual_environment_vm" "virtual_machines" {
   disk {
     datastore_id = "local-lvm"
     interface    = "virtio0"
-    iothread     = true
-    discard      = "on"
     size         = 20
   }
 }
