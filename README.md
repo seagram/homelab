@@ -37,6 +37,7 @@ A homelab for self-hosting open source software.
         <tr>
           <td align="center"><img src="assets/proxmox.svg" alt="Proxmox" width="80" height="80"/><br/><b>Proxmox</b></td>
           <td align="center"><img src="assets/ubuntu.svg" alt="Ubuntu" width="80" height="80"/><br/><b>Ubuntu Linux</b></td>
+          <td align="center"><img src="assets/talos.svg" alt="Talos" width="80" height="80"/><br/><b>Talos Linux</b></td>
         </tr>
       </table>
     </td>
