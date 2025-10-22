@@ -13,6 +13,35 @@ A homelab for self-hosting open source software.
 - **Layer 3: Virtual Machines** - 3 VMs (1 control plane, 2 workers) provisioned via Terraform running Talos Linux (4GB RAM and 2 cores each)
 - **Layer 4: Kubernetes** - Running a fully immutable, API-managed Kubernetes distribution with a entirely declarative configuration.
 
+## Setup
+
+The entire homelab can be provisioned with a single command:
+
+```bash
+terraform apply
+```
+
+This will:
+
+1. **Setup Secrets Manager** - Create an AWS SSM Parameter Store for all secrets
+2. **Configure Cloudflare DNS** - Set up CNAME records for all deployed services behind a reverse proxy.
+3. **Provision VMs** - Create 3 Talos Linux VMs on Proxmox (1 control plane, 2 workers) with:
+   - 2 cores, 2GB RAM, 20GB disk each
+   - Static IPs
+   - Custom Talos image with QEMU guest agent and Tailscale extensions
+4. **Bootstrap Kubernetes** - Initialize a 3-node Kubernetes cluster:
+   - Generate machine secrets and certificates
+   - Apply machine-specific patched Talos configurations
+   - Bootstrap etcd and Kubernetes API server on the control-plane node
+5. **Set up Tailscale** - Configure VPN networking:
+   - Create Access Control Lists (ACLs) for network policies
+   - Generate OAuth2 client credentials for Kubernetes Operator integration
+   - Auto-enroll all VMs in the Tailscale network
+6. **Deploy applications**
+   - Automatically discover and create namespaces from `kubernetes/apps/` directories
+   - Deploy all Kubernetes manifests (deployments, services, ingress, PVCs)
+   - Install Tailscale Operator via Helm for secure ingress management
+
 ## Infrastructure Stack
 
 <div align="center">
