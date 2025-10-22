@@ -6,7 +6,7 @@ check-dependencies:
     #!/usr/bin/env bash
     set -euo pipefail
 
-    dependencies=("terraform" "ansible" "kubectl")
+    dependencies=("terraform" "ansible" "kubectl" "talosctl")
     missing=()
 
     for dep in "${dependencies[@]}"; do
@@ -51,3 +51,10 @@ create-proxmox-usb:
 
 list:
     @just --list
+
+# ===========================================
+# Notes
+# ===========================================
+# This configuration uses snippets to bootstrap the k3s cluster.
+# Snippets are not enabled by default in new Proxmox installations.
+# You need to enable them in the 'Datacenter > Storage' section of the Proxmox GUI.
