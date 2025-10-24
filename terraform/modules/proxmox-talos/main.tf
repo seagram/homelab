@@ -17,16 +17,19 @@ locals {
       vm_id      = 101
       name       = "control-plane"
       ip_address = "${var.control_plane_ip}"
+      memory = 4096
     }
     worker-node-1 = {
       vm_id      = 102
       name       = "worker-node-1"
       ip_address = "${var.worker_node_1_ip}"
+      memory = 3072
     }
     worker-node-2 = {
       vm_id      = 103
       name       = "worker-node-2"
       ip_address = "${var.worker_node_2_ip}"
+      memory = 3072
     }
   }
 
@@ -57,14 +60,22 @@ data "talos_image_factory_urls" "this" {
   platform      = "nocloud"
 }
 
+# this creates the ISO if it doesn't exist, or adopts it if it does.
+# to prevent deletion on `terraform destroy`, run before:
+# terraform state rm module.proxmox-talos.proxmox_virtual_environment_download_file.talos_image
 resource "proxmox_virtual_environment_download_file" "talos_image" {
   content_type = "iso"
   datastore_id = "local"
   node_name    = "proxmox"
   file_name    = "talos-${var.talos_version}-nocloud-amd64.iso"
   url          = data.talos_image_factory_urls.this.urls.iso
-  overwrite = true
+
+  overwrite           = false
   overwrite_unmanaged = true
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "proxmox_virtual_environment_vm" "virtual_machines" {
@@ -81,7 +92,7 @@ resource "proxmox_virtual_environment_vm" "virtual_machines" {
   }
 
   memory {
-    dedicated = 2048
+    dedicated = each.value.memory
     floating = 0
   }
 

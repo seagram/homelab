@@ -22,3 +22,20 @@ variable "worker_node_2_ip" {
 variable "talos_version" {
   type = string
 }
+
+variable "vm_triggers" {
+  description = "VM IDs to trigger configuration reapplication when VMs change"
+  type        = map(string)
+  default     = {}
+}
+
+variable "tailscale_auth_key" {
+  description = "Tailscale authentication key for the extension service"
+  type        = string
+  sensitive   = true
+}
+
+variable "installer_image_url" {
+  description = "Talos installer image URL from the image factory"
+  type        = string
+}

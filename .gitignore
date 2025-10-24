@@ -8,6 +8,8 @@ terraform.auto.pkrvars.hcl
 **/.DS_Store
 .talos/
 .kube/
+kubeconfig
+talosconfig
 svg/
 *.md
 !README.md

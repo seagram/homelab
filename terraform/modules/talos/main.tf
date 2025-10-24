@@ -43,6 +43,17 @@ data "talos_machine_configuration" "this" {
   machine_secrets  = talos_machine_secrets.this.machine_secrets
 }
 
+# triggers talos to reapply config when VMs change
+resource "terraform_data" "vm_trigger" {
+  for_each = {
+    "control_plane" = "control-plane"
+    "worker_1"      = "worker-node-1"
+    "worker_2"      = "worker-node-2"
+  }
+
+  input = lookup(var.vm_triggers, each.value, "")
+}
+
 resource "talos_machine_configuration_apply" "this" {
   for_each = local.nodes
 
@@ -50,18 +61,34 @@ resource "talos_machine_configuration_apply" "this" {
   machine_configuration_input = data.talos_machine_configuration.this[each.key].machine_configuration
   node                        = each.value.ip
   timeouts = {
-    create = "2m"
+    create = "4m"
   }
   config_patches = [
     yamlencode({
       machine = {
         install = {
           disk  = "/dev/vda"
-          image = "factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.9.5"
+          image = var.installer_image_url
         }
       }
+    }),
+    yamlencode({
+      apiVersion = "v1alpha1"
+      kind       = "ExtensionServiceConfig"
+      name       = "tailscale"
+      environment = [
+        "TS_AUTHKEY=${var.tailscale_auth_key}"
+      ]
     })
   ]
+
+  lifecycle {
+    replace_triggered_by = [
+      terraform_data.vm_trigger["control_plane"],
+      terraform_data.vm_trigger["worker_1"],
+      terraform_data.vm_trigger["worker_2"]
+    ]
+  }
 }
 
 resource "talos_machine_bootstrap" "this" {
@@ -69,6 +96,24 @@ resource "talos_machine_bootstrap" "this" {
   client_configuration = data.talos_client_configuration.this.client_configuration
   node                 = var.control_plane_ip
   timeouts = {
-    create = "2m"
+    create = "4m"
   }
+}
+
+resource "talos_cluster_kubeconfig" "this" {
+  depends_on           = [talos_machine_bootstrap.this]
+  client_configuration = talos_machine_secrets.this.client_configuration
+  node                 = var.control_plane_ip
+}
+
+resource "local_file" "kubeconfig" {
+  content         = talos_cluster_kubeconfig.this.kubeconfig_raw
+  filename        = "${path.root}/../kubeconfig"
+  file_permission = "0600"
+}
+
+resource "local_file" "talosconfig" {
+  content         = data.talos_client_configuration.this.talos_config
+  filename        = "${path.root}/../talosconfig"
+  file_permission = "0600"
 }

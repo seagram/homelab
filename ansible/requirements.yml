@@ -1,5 +1,0 @@
-collections:
-  - amazon.aws
-  - name: https://github.com/k3s-io/k3s-ansible.git
-    type: git
-    version: main
