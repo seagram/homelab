@@ -4,6 +4,9 @@ terraform {
       source = "siderolabs/talos"
       version = "0.9.0"
     }
+    tailscale = {
+      source = "tailscale/tailscale"
+    }
   }
 }
 
@@ -105,14 +108,41 @@ resource "talos_cluster_kubeconfig" "this" {
   node                 = var.control_plane_ip
 }
 
+data "tailscale_device" "control_plane" {
+  depends_on = [talos_machine_bootstrap.this]
+  hostname   = "control-plane"
+  wait_for   = "120s"
+}
+
+data "talos_client_configuration" "tailnet" {
+  depends_on           = [data.tailscale_device.control_plane]
+  cluster_name         = var.cluster_name
+  client_configuration = talos_machine_secrets.this.client_configuration
+  endpoints            = [data.tailscale_device.control_plane.addresses[0]]
+}
+
+resource "talos_cluster_kubeconfig" "tailnet" {
+  depends_on           = [data.tailscale_device.control_plane]
+  client_configuration = talos_machine_secrets.this.client_configuration
+  node                 = data.tailscale_device.control_plane.addresses[0]
+}
+
+locals {
+  kubeconfig_with_tailnet = replace(
+    talos_cluster_kubeconfig.tailnet.kubeconfig_raw,
+    "https://${var.control_plane_ip}:6443",
+    "https://${data.tailscale_device.control_plane.addresses[0]}:6443"
+  )
+}
+
 resource "local_file" "kubeconfig" {
-  content         = talos_cluster_kubeconfig.this.kubeconfig_raw
+  content         = local.kubeconfig_with_tailnet
   filename        = "${path.root}/../kubeconfig"
   file_permission = "0600"
 }
 
 resource "local_file" "talosconfig" {
-  content         = data.talos_client_configuration.this.talos_config
+  content         = data.talos_client_configuration.tailnet.talos_config
   filename        = "${path.root}/../talosconfig"
   file_permission = "0600"
 }

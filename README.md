@@ -88,6 +88,7 @@ A homelab for self-hosting open source software.
           <td align="center"><img src="assets/commafeed.svg" alt="Commafeed" width="80" height="80"/><br/><b>Commafeed</b></td>
           <td align="center"><img src="assets/dokploy.svg" alt="Dokploy" width="80" height="80"/><br/><b>Dokploy</b></td>
           <td align="center"><img src="assets/portainer.svg" alt="Portainer" width="80" height="80"/><br/><b>Portainer</b></td>
+          <td align="center"><img src="assets/longhorn.svg" alt="Longhorn" width="80" height="80"/><br/><b>Longhorn</b></td>
         </tr>
       </table>
     </td>

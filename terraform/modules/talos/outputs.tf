@@ -1,9 +1,9 @@
 output "kubeconfig" {
-  value       = talos_cluster_kubeconfig.this.kubeconfig_raw
+  value       = local.kubeconfig_with_tailnet
   sensitive   = true
 }
 
 output "talosconfig" {
-  value       = data.talos_client_configuration.this.talos_config
+  value       = data.talos_client_configuration.tailnet.talos_config
   sensitive   = true
 }
