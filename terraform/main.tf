@@ -60,7 +60,8 @@ module "talos" {
 
 
 module "kubernetes" {
-  count               = var.enable_kubernetes ? 1 : 0
-  source              = "./modules/kubernetes"
-  depends_on          = [module.ansible, module.tailscale]
+  source                         = "./modules/kubernetes"
+  tailscale_oauth_client_id      = module.tailscale.k8s_operator_oauth_client_id
+  tailscale_oauth_client_secret  = module.tailscale.k8s_operator_oauth_client_secret
+  depends_on                     = [module.tailscale]
 }

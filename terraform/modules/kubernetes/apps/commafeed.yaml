@@ -5,6 +5,20 @@ metadata:
   name: commafeed
 ---
 apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: commafeed-pv
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /var/lib/commafeed
+    type: DirectoryOrCreate
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: commafeed-data
@@ -15,7 +29,7 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: local-path
+  volumeName: commafeed-pv
 ---
 apiVersion: apps/v1
 kind: Deployment

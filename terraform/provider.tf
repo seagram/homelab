@@ -29,7 +29,7 @@ terraform {
     }
     tailscale = {
       source = "tailscale/tailscale"
-      version = "0.22.0"
+      version = "0.23.0"
     }
     helm = {
       source  = "hashicorp/helm"
@@ -64,12 +64,12 @@ provider "tailscale" {
 provider "random" {}
 
 provider "kubernetes" {
-  config_path    = "../.kube/config"
+  config_path    = "../kubeconfig"
 }
 
 provider "helm" {
   kubernetes = {
-    config_path = "../.kube/config"
+    config_path = "../kubeconfig"
   }
 }
 
