@@ -43,6 +43,10 @@ terraform {
       source = "siderolabs/talos"
       version = "0.9.0"
     }
+    digitalocean = {
+      source = "digitalocean/digitalocean"
+      version = "2.68.0"
+    }
   }
 }
 
@@ -86,4 +90,8 @@ provider "proxmox" {
       address = "100.85.178.8"
     }
   }
+}
+
+provider "digitalocean" {
+  token = var.digital_ocean_token
 }

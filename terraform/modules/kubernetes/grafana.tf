@@ -1,3 +1,13 @@
+resource "digitalocean_database_db" "grafana" {
+  cluster_id = digitalocean_database_cluster.postgres.id
+  name       = "grafana"
+}
+
+resource "digitalocean_database_user" "grafana" {
+  cluster_id = digitalocean_database_cluster.postgres.id
+  name       = "grafana"
+}
+
 resource "helm_release" "grafana" {
   name             = "grafana"
   repository       = "https://grafana.github.io/helm-charts"
@@ -12,12 +22,38 @@ resource "helm_release" "grafana" {
     },
     {
       name  = "persistence.enabled"
-      value = "true"
+      value = "false"
     },
     {
-      name  = "persistence.size"
-      value = "5Gi"
+      name  = "database.type"
+      value = "postgres"
+    },
+    {
+      name  = "database.host"
+      value = "${digitalocean_database_cluster.postgres.host}:${digitalocean_database_cluster.postgres.port}"
+    },
+    {
+      name  = "database.name"
+      value = digitalocean_database_db.grafana.name
+    },
+    {
+      name  = "database.user"
+      value = digitalocean_database_user.grafana.name
+    },
+    {
+      name  = "database.password"
+      value = digitalocean_database_user.grafana.password
+    },
+    {
+      name  = "database.sslmode"
+      value = "require"
     }
+  ]
+
+  depends_on = [
+    digitalocean_database_cluster.postgres,
+    digitalocean_database_db.grafana,
+    digitalocean_database_user.grafana
   ]
 }
 

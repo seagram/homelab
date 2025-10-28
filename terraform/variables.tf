@@ -97,6 +97,11 @@ variable "admin_password" {
   sensitive   = true
 }
 
+variable "digital_ocean_token" {
+  type = string
+  sensitive = true
+}
+
 #############################
 #           talos           #
 #############################
