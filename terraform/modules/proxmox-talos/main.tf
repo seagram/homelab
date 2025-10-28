@@ -60,10 +60,20 @@ data "talos_image_factory_urls" "this" {
   platform      = "nocloud"
 }
 
-# this creates the ISO if it doesn't exist, or adopts it if it does.
-# to prevent deletion on `terraform destroy`, run before:
-# terraform state rm module.proxmox-talos.proxmox_virtual_environment_download_file.talos_image
+data "proxmox_virtual_environment_file" "talos_iso" {
+  count        = 1
+  content_type = "iso"
+  datastore_id = "local"
+  node_name    = "proxmox"
+  file_name    = "talos-${var.talos_version}-nocloud-amd64.iso"
+}
+
+locals {
+  iso_exists = length(data.proxmox_virtual_environment_file.talos_iso) > 0 && try(data.proxmox_virtual_environment_file.talos_iso[0].file_name, null) != null
+}
+
 resource "proxmox_virtual_environment_download_file" "talos_image" {
+  count        = local.iso_exists ? 0 : 1
   content_type = "iso"
   datastore_id = "local"
   node_name    = "proxmox"
@@ -112,7 +122,7 @@ resource "proxmox_virtual_environment_vm" "virtual_machines" {
   }
 
   cdrom {
-    file_id = proxmox_virtual_environment_download_file.talos_image.id
+    file_id = local.iso_exists ? data.proxmox_virtual_environment_file.talos_iso[0].id : proxmox_virtual_environment_download_file.talos_image[0].id
   }
 
   initialization {

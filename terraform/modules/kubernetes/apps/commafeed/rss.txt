@@ -16,3 +16,4 @@ https://treyhunner.com/atom.xml
 https://www.arp242.net/feed.xml
 https://dayvster.com/rss.xml
 https://allvpv.org/rss.xml
+https://boz.com

@@ -12,7 +12,7 @@ terraform {
 }
 
 locals {
-  apps_path = "${path.root}/../kubernetes/apps"
+  apps_path = "${path.module}/apps"
 
   namespaces = {
     for f in fileset(local.apps_path, "*/") :
@@ -36,31 +36,4 @@ resource "kubernetes_manifest" "manifests" {
   for_each = local.manifests
 
   manifest = yamldecode(file(each.value))
-}
-
-
-resource "kubernetes_namespace" "tailscale" {
-    metadata {
-        name = "tailscale"
-        labels = {
-            "pod-security.kubernetes.io/enforce" = "privileged"
-        }
-    }
-}
-
-resource "helm_release" "tailscale_operator" {
-    name = "tailscale-operator"
-    repository = "https://pkgs.tailscale.com/helmcharts"
-    chart = "tailscale-operator"
-    namespace = "tailscale"
-
-    set_sensitive = [{
-      name  = "oauth.clientId"
-      value = var.tailscale_oauth_id
-    },
-    {
-      name  = "oauth.clientSecret"
-      value = var.tailscale_oauth_key
-    }]
-    wait = true
 }

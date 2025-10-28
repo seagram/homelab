@@ -14,6 +14,10 @@ module "cloudflare" {
   tailscale_magic_dns_domain = var.tailscale_magic_dns_domain
 }
 
+module "tailscale" {
+  source     = "./modules/tailscale"
+}
+
 #############################
 #            k3s            #
 #############################
@@ -25,12 +29,8 @@ module "proxmox-k3s" {
   tailscale_auth_key = var.tailscale_auth_key
 }
 
-module "tailscale" {
-  source     = "./modules/tailscale"
-  depends_on = [module.proxmox-k3s]
-}
-
 module "ansible" {
+  count = var.enable_ansible ? 1 : 0
   source             = "./modules/ansible"
   k3s_token          = var.k3s_token
   default_gateway    = var.default_gateway
@@ -38,14 +38,6 @@ module "ansible" {
   root_password      = var.root_password
   tailscale_auth_key = var.tailscale_auth_key
   depends_on         = [module.tailscale]
-}
-
-module "kubernetes" {
-  count               = var.enable_kubernetes ? 1 : 0
-  source              = "./modules/kubernetes"
-  depends_on          = [module.ansible, module.tailscale]
-  tailscale_oauth_id  = module.tailscale.tailscale_oauth_id
-  tailscale_oauth_key = module.tailscale.tailscale_oauth_key
 }
 
 #############################
@@ -73,4 +65,15 @@ module "talos" {
   vm_triggers        = module.proxmox-talos.vm_ids
   installer_image_url = module.proxmox-talos.installer_image_url
   depends_on         = [module.proxmox-talos]
+}
+
+#############################
+#         kubernetes        #
+#############################
+
+
+module "kubernetes" {
+  count               = var.enable_kubernetes ? 1 : 0
+  source              = "./modules/kubernetes"
+  depends_on          = [module.ansible, module.tailscale]
 }

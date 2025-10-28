@@ -7,6 +7,11 @@ variable "tags" {
   default = {}
 }
 
+variable "enable_ansible" {
+  type = bool
+  default = false
+}
+
 #############################
 #         networking        #
 #############################
