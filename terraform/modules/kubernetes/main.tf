@@ -14,26 +14,24 @@ terraform {
 locals {
   apps_path = "${path.module}/apps"
 
-  namespaces = {
-    for f in fileset(local.apps_path, "*/") :
-    trimsuffix(f, "/") => trimsuffix(f, "/")
+  # Each app has a single manifest file named <app>.yaml in the apps directory
+  app_files = {
+    for file in fileset(local.apps_path, "*.yaml") :
+    trimsuffix(file, ".yaml") => "${local.apps_path}/${file}"
   }
-  manifests = {
-    for f in fileset(local.apps_path, "**/*.{yml,yaml}") :
-    f => "${local.apps_path}/${f}"
-  }
+
+  # Parse all manifests and create individual resources
+  manifests = merge([
+    for app_name, file_path in local.app_files : {
+      for idx, doc in split("---", file(file_path)) :
+      "${app_name}-${idx}" => yamldecode(doc)
+      if trimspace(doc) != ""
+    }
+  ]...)
 }
 
-resource "kubernetes_namespace" "namespaces" {
-  for_each = local.namespaces
-
-  metadata {
-    name = each.value
-  }
-}
-
-resource "kubernetes_manifest" "manifests" {
+resource "kubernetes_manifest" "apps" {
   for_each = local.manifests
 
-  manifest = yamldecode(file(each.value))
+  manifest = each.value
 }

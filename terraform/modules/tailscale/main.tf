@@ -39,3 +39,12 @@ resource "tailscale_oauth_client" "client" {
   scopes      = ["devices:core", "auth_keys"]
   tags        = ["tag:k8s-operator"]
 }
+
+resource "tailscale_tailnet_key" "tailnet_key" {
+  depends_on = [ tailscale_acl.acl ]
+  reusable      = true
+  ephemeral     = true
+  preauthorized = true
+  description   = "Talos Linux Nodes"
+  tags = ["tag:k8s"]
+}

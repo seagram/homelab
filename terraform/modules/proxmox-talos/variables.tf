@@ -22,3 +22,8 @@ variable "worker_node_2_ip" {
 variable "talos_version" {
   type = string
 }
+
+variable "tailscale_tailnet_key" {
+  type      = string
+  sensitive = true
+}

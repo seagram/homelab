@@ -45,11 +45,6 @@ variable "worker_node_2_ip" {
 #         tailscale         #
 #############################
 
-variable "tailscale_auth_key" {
-  type      = string
-  sensitive = true
-}
-
 variable "tailscale_api_token" {
   type = string
   sensitive = true

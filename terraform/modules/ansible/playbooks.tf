@@ -4,7 +4,6 @@ locals {
             enabled = false
             playbook_file = "install_tailscale.yml"
             target_host = "proxmox-ssh"
-            extra_vars = { tailscale_auth_key = var.tailscale_auth_key }
             replayable = false
         }
         disable_power_off = {

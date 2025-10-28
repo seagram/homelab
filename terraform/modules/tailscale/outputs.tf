@@ -7,3 +7,8 @@ output "tailscale_oauth_key" {
     value = tailscale_oauth_client.client.key
     sensitive = true
 }
+
+output "tailscale_tailnet_key" {
+    value = tailscale_tailnet_key.tailnet_key.key
+    sensitive = true
+}

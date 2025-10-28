@@ -29,8 +29,8 @@ variable "vm_triggers" {
   default     = {}
 }
 
-variable "tailscale_auth_key" {
-  description = "Tailscale authentication key for the extension service"
+variable "tailscale_tailnet_key" {
+  description = "Tailscale tailnet authentication key for the extension service"
   type        = string
   sensitive   = true
 }

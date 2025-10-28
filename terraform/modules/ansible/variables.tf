@@ -15,8 +15,3 @@ variable "default_gateway" {
 variable "proxmox_ip" {
     type = string
 }
-
-variable "tailscale_auth_key" {
-  type      = string
-  sensitive = true
-}

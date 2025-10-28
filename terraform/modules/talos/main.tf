@@ -43,7 +43,6 @@ data "talos_machine_configuration" "this" {
   machine_secrets  = talos_machine_secrets.this.machine_secrets
 }
 
-# triggers talos to reapply config when VMs change
 resource "terraform_data" "vm_trigger" {
   for_each = {
     "control_plane" = "control-plane"
@@ -77,7 +76,7 @@ resource "talos_machine_configuration_apply" "this" {
       kind       = "ExtensionServiceConfig"
       name       = "tailscale"
       environment = [
-        "TS_AUTHKEY=${var.tailscale_auth_key}"
+        "TS_AUTHKEY=${var.tailscale_tailnet_key}"
       ]
     })
   ]
