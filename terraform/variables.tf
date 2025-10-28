@@ -92,6 +92,11 @@ variable "k3s_token" {
   sensitive = true
 }
 
+variable "admin_password" {
+  type        = string
+  sensitive   = true
+}
+
 #############################
 #           talos           #
 #############################

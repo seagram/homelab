@@ -63,5 +63,6 @@ module "kubernetes" {
   source                         = "./modules/kubernetes"
   tailscale_oauth_client_id      = module.tailscale.k8s_operator_oauth_client_id
   tailscale_oauth_client_secret  = module.tailscale.k8s_operator_oauth_client_secret
+  admin_password = var.admin_password
   depends_on                     = [module.tailscale]
 }
