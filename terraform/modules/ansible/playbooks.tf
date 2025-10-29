@@ -32,7 +32,6 @@ locals {
 
 resource "ansible_playbook" "playbooks" {
     for_each = { for k, v in local.playbooks : k => v if v.enabled }
-
     playbook   = "./playbooks/${each.value.playbook_file}"
     name       = each.value.target_host
     extra_vars = each.value.extra_vars

@@ -47,6 +47,10 @@ terraform {
       source = "digitalocean/digitalocean"
       version = "2.68.0"
     }
+    grafana = {
+      source = "grafana/grafana"
+      version = "4.12.0"
+    }
   }
 }
 
@@ -94,4 +98,9 @@ provider "proxmox" {
 
 provider "digitalocean" {
   token = var.digital_ocean_token
+}
+
+provider "grafana" {
+  cloud_api_url  = "http://seagram.grafana.net/"
+  cloud_access_policy_token = var.grafana_cloud_token
 }

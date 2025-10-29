@@ -12,6 +12,11 @@ variable "enable_ansible" {
   default = false
 }
 
+variable "enable_secrets" {
+  type = bool
+  default = false
+}
+
 #############################
 #         networking        #
 #############################
@@ -109,4 +114,9 @@ variable "digital_ocean_token" {
 variable "talos_version" {
   type = string
   default = "v1.11.3"
+}
+
+variable "grafana_cloud_token" {
+  type = string
+  sensitive = true
 }
