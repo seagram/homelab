@@ -7,11 +7,6 @@ variable "tags" {
   default = {}
 }
 
-variable "enable_ansible" {
-  type = bool
-  default = false
-}
-
 variable "enable_secrets" {
   type = bool
   default = false

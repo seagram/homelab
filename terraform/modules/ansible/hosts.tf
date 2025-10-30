@@ -1,9 +1,10 @@
 locals {
   proxmox_tailscale_ip = data.tailscale_device.proxmox.addresses[0]
+  vault_tailscale_ip = data.tailscale_device.vault.addresses[0]
 }
 
 #############################
-#            ssh            #
+#          proxmox          #
 #############################
 
 resource "ansible_host" "proxmox-ssh" {
@@ -17,15 +18,24 @@ resource "ansible_host" "proxmox-ssh" {
   }
 }
 
-#############################
-#         tailscale         #
-#############################
-
 resource "ansible_host" "proxmox_tailscale" {
   name   = "proxmox-tailscale"
   groups = ["tailscale"]
   variables = {
     ansible_host       = "${local.proxmox_tailscale_ip}"
+    ansible_connection = "ssh"
+  }
+}
+
+#############################
+#           vault           #
+#############################
+
+resource "ansible_host" "proxmox_vault" {
+  name   = "proxmox-vault"
+  groups = ["tailscale"]
+  variables = {
+    ansible_host       = "${local.vault_tailscale_ip}"
     ansible_connection = "ssh"
   }
 }
