@@ -6,12 +6,9 @@ A homelab for self-hosting open source software.
 
 </div>
 
-## Architecture Layers
+## Architecture
 
-- **Layer 1: Hardware** - Refurbished MacBook Pro (2015, Intel Core i7, 16GB DDR3 RAM).
-- **Layer 2: Hypervisor** - Proxmox VE configured with Ansible and connected via Tailscale VPN.
-- **Layer 3: Virtual Machines** - 3 VMs (1 control plane, 2 workers) provisioned via Terraform running Talos Linux (4GB RAM and 2 cores each)
-- **Layer 4: Kubernetes** - Running a fully immutable, API-managed Kubernetes distribution with a entirely declarative configuration.
+![Archiecture Diagram](./assets/diagram.svg)
 
 ## Infrastructure Stack
 
