@@ -21,6 +21,7 @@ module "ansible" {
   vault_s3_bucket_name = module.aws.vault_s3_bucket_name
 }
 
+
 module "proxmox" {
   depends_on             = [module.ansible]
   source                 = "./modules/proxmox"

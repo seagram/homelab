@@ -60,7 +60,6 @@ resource "aws_instance" "vault" {
   instance_type = "t2.micro"
 
   vpc_security_group_ids      = [aws_security_group.vault.id]
-  associate_public_ip_address = false
   iam_instance_profile        = aws_iam_instance_profile.vault.name
 
   user_data = <<-EOF
@@ -70,6 +69,7 @@ resource "aws_instance" "vault" {
     runcmd:
       - ['touch', '/home/ubuntu/.hushlogin']
       - ['chown', 'ubuntu:ubuntu', '/home/ubuntu/.hushlogin']
+      - ['hostnamectl', 'set-hostname', 'vault']
       - ['sh', '-c', 'curl -fsSL https://tailscale.com/install.sh | sh']
       - ['tailscale', 'up', '--auth-key=${tailscale_tailnet_key.this.key}', '--hostname=vault']
       - ['tailscale', 'set', '--ssh']

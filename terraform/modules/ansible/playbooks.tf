@@ -28,9 +28,9 @@ locals {
             replayable = false
         }
         install_vault = {
-            enabled = false
+            enabled = true
             playbook_file = "install_vault.yml"
-            target_host = "proxmox-vault"
+            target_host = "vault_tailscale"
             extra_vars = {
                 s3_bucket_name = var.vault_s3_bucket_name
             }
@@ -41,7 +41,7 @@ locals {
 
 resource "ansible_playbook" "playbooks" {
     for_each = { for k, v in local.playbooks : k => v if v.enabled }
-    playbook   = "./playbooks/${each.value.playbook_file}"
+    playbook   = "${path.module}/playbooks/${each.value.playbook_file}"
     name       = each.value.target_host
     extra_vars = each.value.extra_vars
     replayable = each.value.replayable
