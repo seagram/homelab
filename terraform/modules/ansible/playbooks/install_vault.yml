@@ -12,10 +12,9 @@
         update_cache: yes
 
     - name: Add HashiCorp GPG key
-      ansible.builtin.shell: |
-        wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-      args:
-        creates: /usr/share/keyrings/hashicorp-archive-keyring.gpg
+      ansible.builtin.apt_key:
+        url: https://apt.releases.hashicorp.com/gpg
+        state: present
 
     - name: Add HashiCorp repository
       ansible.builtin.apt_repository:
@@ -40,7 +39,7 @@
         state: directory
         owner: vault
         group: vault
-        mode: '0750'
+        mode: "0750"
 
     - name: Create Vault data directory
       ansible.builtin.file:
@@ -48,13 +47,20 @@
         state: directory
         owner: vault
         group: vault
-        mode: '0750'
+        mode: "0750"
+
+    - name: Get AWS region from EC2 metadata
+      ansible.builtin.uri:
+        url: http://169.254.169.254/latest/meta-data/placement/region
+        return_content: yes
+      register: aws_region
 
     - name: Configure Vault
       ansible.builtin.copy:
         content: |
-          storage "file" {
-            path = "/opt/vault/data"
+          storage "s3" {
+            bucket = "{{ s3_bucket_name }}"
+            region = "{{ aws_region.content }}"
           }
 
           listener "tcp" {
@@ -67,7 +73,7 @@
         dest: /etc/vault.d/vault.hcl
         owner: vault
         group: vault
-        mode: '0640'
+        mode: "0640"
 
     - name: Enable and start Vault service
       ansible.builtin.systemd:
@@ -98,16 +104,31 @@
       register: vault_init_result
       when: not vault_init_status.json.initialized
 
-    - name: Save Vault init output
+    - name: Save Vault init output locally
       ansible.builtin.copy:
         content: "{{ vault_init_result.json | to_nice_json }}"
-        dest: /root/vault-init-keys.json
-        mode: '0600'
+        dest: /tmp/vault-init-keys.json
+        mode: "0600"
+      when: not vault_init_status.json.initialized
+
+    - name: Upload Vault keys to S3
+      amazon.aws.s3_object:
+        bucket: "{{ s3_bucket_name }}"
+        object: vault-init-keys.json
+        src: /tmp/vault-init-keys.json
+        mode: put
+        encrypt: true
+      when: not vault_init_status.json.initialized
+
+    - name: Remove local keys file
+      ansible.builtin.file:
+        path: /tmp/vault-init-keys.json
+        state: absent
       when: not vault_init_status.json.initialized
 
     - name: Display initialization message
       ansible.builtin.debug:
-        msg: "Vault initialized. Keys saved to /root/vault-init-keys.json on the vault server. SAVE THESE SECURELY!"
+        msg: "Vault initialized. Keys saved to s3://{{ s3_bucket_name }}/vault-init-keys.json with encryption. SAVE THESE SECURELY!"
       when: not vault_init_status.json.initialized
 
     - name: Display already initialized message

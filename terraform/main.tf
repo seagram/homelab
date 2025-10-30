@@ -18,6 +18,7 @@ module "ansible" {
   default_gateway    = var.default_gateway
   proxmox_ip         = var.proxmox_ip
   root_password      = var.root_password
+  vault_s3_bucket_name = module.aws.vault_s3_bucket_name
 }
 
 module "proxmox" {

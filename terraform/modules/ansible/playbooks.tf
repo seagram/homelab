@@ -27,6 +27,15 @@ locals {
             extra_vars = {}
             replayable = false
         }
+        install_vault = {
+            enabled = false
+            playbook_file = "install_vault.yml"
+            target_host = "proxmox-vault"
+            extra_vars = {
+                s3_bucket_name = var.vault_s3_bucket_name
+            }
+            replayable = false
+        }
     }
 }
 

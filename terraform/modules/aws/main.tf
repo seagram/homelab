@@ -61,6 +61,7 @@ resource "aws_instance" "vault" {
 
   vpc_security_group_ids      = [aws_security_group.vault.id]
   associate_public_ip_address = false
+  iam_instance_profile        = aws_iam_instance_profile.vault.name
 
   user_data = <<-EOF
     #cloud-config
@@ -76,4 +77,63 @@ resource "aws_instance" "vault" {
       - ['sed', '-i', 's/^#*PubkeyAuthentication.*/PubkeyAuthentication no/', '/etc/ssh/sshd_config']
       - ['systemctl', 'restart', 'sshd']
   EOF
+}
+
+resource "aws_s3_bucket" "vault_storage" {
+  bucket = "seagram-homelab-vault-storage"
+}
+
+resource "aws_s3_bucket_versioning" "vault_storage" {
+  bucket = aws_s3_bucket.vault_storage.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+data "aws_caller_identity" "current" {}
+
+resource "aws_iam_role" "vault" {
+  name = "vault-ec2-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "vault_s3" {
+  name = "vault-s3-access"
+  role = aws_iam_role.vault.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:DeleteObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          aws_s3_bucket.vault_storage.arn,
+          "${aws_s3_bucket.vault_storage.arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_instance_profile" "vault" {
+  name = "vault-instance-profile"
+  role = aws_iam_role.vault.name
 }
