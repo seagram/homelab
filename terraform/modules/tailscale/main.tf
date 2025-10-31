@@ -23,7 +23,7 @@ resource "tailscale_acl" "acl" {
     ],
     "ssh" : [
       {
-        "action" : "check",
+        "action" : "accept",
         "src"    : ["autogroup:member"],
         "dst"    : ["autogroup:self"],
         "users"  : ["autogroup:nonroot", "root"]

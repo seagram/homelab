@@ -1,25 +1,24 @@
 data "tailscale_device" "proxmox" {
-    hostname = "proxmox"
-    wait_for = "120s"
+  hostname = "proxmox"
+  wait_for = "120s"
 }
 
 data "tailscale_device" "vault" {
-    hostname = "vault"
-    wait_for = "120s"
+  hostname = "vault"
+  wait_for = "120s"
 }
 
 locals {
   proxmox_tailscale_ip = data.tailscale_device.proxmox.addresses[0]
-  vault_tailscale_ip = data.tailscale_device.vault.addresses[0]
+  vault_tailscale_ip   = data.tailscale_device.vault.addresses[0]
 }
 
 #############################
 #          proxmox          #
 #############################
 
-resource "ansible_host" "proxmox-ssh" {
-  name   = "proxmox-ssh"
-  groups = ["ssh"]
+resource "ansible_host" "proxmox_ssh" {
+  name = "proxmox-ssh"
   variables = {
     ansible_host       = "${var.proxmox_ip}"
     ansible_user       = "root"
@@ -29,11 +28,10 @@ resource "ansible_host" "proxmox-ssh" {
 }
 
 resource "ansible_host" "proxmox_tailscale" {
-  name   = "proxmox-tailscale"
-  groups = ["tailscale"]
+  name = "proxmox-tailscale"
   variables = {
-    ansible_host       = "${local.proxmox_tailscale_ip}"
-    ansible_connection = "ssh"
+    ansible_host     = "proxmox"
+    ansible_ssh_user = "root"
   }
 }
 
@@ -42,10 +40,9 @@ resource "ansible_host" "proxmox_tailscale" {
 #############################
 
 resource "ansible_host" "vault_tailscale" {
-  name   = "vault_tailscale"
-  groups = ["tailscale"]
+  name = "vault-tailscale"
   variables = {
-    ansible_host                 = "${local.vault_tailscale_ip}"
-    ansible_connection           = "ssh"
+    ansible_host     = "vault"
+    ansible_ssh_user = "ubuntu"
   }
 }

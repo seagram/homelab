@@ -30,7 +30,7 @@ locals {
         install_vault = {
             enabled = true
             playbook_file = "install_vault.yml"
-            target_host = "vault_tailscale"
+            target_host = "vault"
             extra_vars = {
                 s3_bucket_name = var.vault_s3_bucket_name
             }
@@ -45,4 +45,10 @@ resource "ansible_playbook" "playbooks" {
     name       = each.value.target_host
     extra_vars = each.value.extra_vars
     replayable = each.value.replayable
+
+    depends_on = [
+      ansible_host.proxmox_ssh,
+      ansible_host.proxmox_tailscale,
+      ansible_host.vault_tailscale
+    ]
 }
