@@ -49,18 +49,12 @@
         group: vault
         mode: "0750"
 
-    - name: Get AWS region from EC2 metadata
-      ansible.builtin.uri:
-        url: http://169.254.169.254/latest/meta-data/placement/region
-        return_content: yes
-      register: aws_region
-
     - name: Configure Vault
       ansible.builtin.copy:
         content: |
           storage "s3" {
             bucket = "{{ s3_bucket_name }}"
-            region = "{{ aws_region.content }}"
+            region = "us-east-1"
           }
 
           listener "tcp" {
