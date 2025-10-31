@@ -1,25 +1,5 @@
 # ===========================================
-# Dependencies
-# ===========================================
-
-check-dependencies:
-    #!/usr/bin/env bash
-    set -euo pipefail
-
-    dependencies=("terraform" "ansible" "kubectl" "talosctl")
-    missing=()
-
-    for dep in "${dependencies[@]}"; do
-        if ! command -v "$dep" &> /dev/null; then
-            missing+=("$dep")
-            echo "✗ $dep is not installed!"
-        else
-            echo "✓ $dep is installed"
-        fi
-    done
-
-# ===========================================
-# Other
+# Scripts
 # ===========================================
 
 create-proxmox-usb:
@@ -48,13 +28,3 @@ create-proxmox-usb:
     sudo dd if=proxmox.dmg of=/dev/rdisk${DISK_NUM} bs=1m
     echo ""
     echo "✓ Proxmox USB drive created successfully."
-
-list:
-    @just --list
-
-# ===========================================
-# Notes
-# ===========================================
-# This configuration uses snippets to bootstrap the k3s cluster.
-# Snippets are not enabled by default in new Proxmox installations.
-# You need to enable them in the 'Datacenter > Storage' section of the Proxmox GUI.
