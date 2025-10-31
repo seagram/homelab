@@ -3,34 +3,35 @@
 #############################
 
 module "tailscale" {
-  source     = "./modules/tailscale"
+  source = "./modules/tailscale"
 }
 
 module "aws" {
-  depends_on = [ module.tailscale ]
-  source = "./modules/aws"
+  count      = var.enable_aws ? 1 : 0
+  depends_on = [module.tailscale]
+  source     = "./modules/aws"
 }
 
 module "ansible" {
-  depends_on = [ module.aws ]
-  source             = "./modules/ansible"
-  k3s_token          = var.k3s_token
-  default_gateway    = var.default_gateway
-  proxmox_ip         = var.proxmox_ip
-  root_password      = var.root_password
-  vault_s3_bucket_name = module.aws.vault_s3_bucket_name
+  count                = var.enable_aws ? 1 : 0
+  depends_on           = [module.aws]
+  source               = "./modules/ansible"
+  default_gateway      = var.default_gateway
+  proxmox_ip           = var.proxmox_ip
+  root_password        = var.root_password
+  vault_s3_bucket_name = module.aws[0].vault_s3_bucket_name
 }
 
 
 module "proxmox" {
-  depends_on             = [module.ansible]
-  source                 = "./modules/proxmox"
-  default_gateway        = var.default_gateway
-  control_plane_ip       = var.control_plane_ip
-  worker_node_1_ip       = var.worker_node_1_ip
-  worker_node_2_ip       = var.worker_node_2_ip
-  talos_version          = var.talos_version
-  tailscale_tailnet_key  = module.tailscale.tailscale_tailnet_key
+  depends_on            = [module.tailscale]
+  source                = "./modules/proxmox"
+  default_gateway       = var.default_gateway
+  control_plane_ip      = var.control_plane_ip
+  worker_node_1_ip      = var.worker_node_1_ip
+  worker_node_2_ip      = var.worker_node_2_ip
+  talos_version         = var.talos_version
+  tailscale_tailnet_key = module.tailscale.tailscale_tailnet_key
 }
 
 module "talos" {
@@ -47,11 +48,11 @@ module "talos" {
 }
 
 module "kubernetes" {
-  depends_on                     = [module.talos]
-  source                         = "./modules/kubernetes"
-  tailscale_oauth_client_id      = module.tailscale.k8s_operator_oauth_client_id
-  tailscale_oauth_client_secret  = module.tailscale.k8s_operator_oauth_client_secret
-  admin_password = var.admin_password
+  depends_on                    = [module.talos]
+  source                        = "./modules/kubernetes"
+  tailscale_oauth_client_id     = module.tailscale.k8s_operator_oauth_client_id
+  tailscale_oauth_client_secret = module.tailscale.k8s_operator_oauth_client_secret
+  admin_password                = var.admin_password
 }
 
 #############################

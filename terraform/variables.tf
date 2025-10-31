@@ -8,7 +8,12 @@ variable "tags" {
 }
 
 variable "enable_secrets" {
-  type = bool
+  type    = bool
+  default = false
+}
+
+variable "enable_aws" {
+  type    = bool
   default = false
 }
 
@@ -17,28 +22,28 @@ variable "enable_secrets" {
 #############################
 
 variable "default_gateway" {
-    type = string
-    default = "10.0.0.1"
+  type    = string
+  default = "10.0.0.1"
 }
 
 variable "proxmox_ip" {
-    type = string
-    default = "10.0.0.10"
+  type    = string
+  default = "10.0.0.10"
 }
 
 variable "control_plane_ip" {
-    type = string
-    default = "10.0.0.11"
+  type    = string
+  default = "10.0.0.11"
 }
 
 variable "worker_node_1_ip" {
-    type = string
-    default = "10.0.0.12"
+  type    = string
+  default = "10.0.0.12"
 }
 
 variable "worker_node_2_ip" {
-    type = string
-    default = "10.0.0.13"
+  type    = string
+  default = "10.0.0.13"
 }
 
 #############################
@@ -46,12 +51,12 @@ variable "worker_node_2_ip" {
 #############################
 
 variable "tailscale_api_token" {
-  type = string
+  type      = string
   sensitive = true
 }
 
 variable "tailscale_magic_dns_domain" {
-  type = string
+  type    = string
   default = "javanese-octatonic.ts.net"
 }
 
@@ -79,26 +84,21 @@ variable "proxmox_api_token" {
 }
 
 variable "root_password" {
-  type        = string
-  sensitive   = true
+  type      = string
+  sensitive = true
 }
 
 #############################
 #         kubernetes        #
 #############################
 
-variable "k3s_token" {
-  type = string
+variable "admin_password" {
+  type      = string
   sensitive = true
 }
 
-variable "admin_password" {
-  type        = string
-  sensitive   = true
-}
-
 variable "digital_ocean_token" {
-  type = string
+  type      = string
   sensitive = true
 }
 
@@ -107,11 +107,11 @@ variable "digital_ocean_token" {
 #############################
 
 variable "talos_version" {
-  type = string
+  type    = string
   default = "v1.11.3"
 }
 
 variable "grafana_cloud_token" {
-  type = string
+  type      = string
   sensitive = true
 }

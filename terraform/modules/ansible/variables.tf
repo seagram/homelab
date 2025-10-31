@@ -1,22 +1,17 @@
 variable "root_password" {
-  type        = string
-  sensitive   = true
-}
-
-variable "k3s_token" {
-  type        = string
-  sensitive   = true
+  type      = string
+  sensitive = true
 }
 
 variable "default_gateway" {
-    type = string
+  type = string
 }
 
 variable "proxmox_ip" {
-    type = string
+  type = string
 }
 
 variable "vault_s3_bucket_name" {
-    type = string
-    default = ""
+  type    = string
+  default = ""
 }
