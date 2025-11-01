@@ -4,6 +4,8 @@ resource "helm_release" "prometheus" {
   chart            = "prometheus"
   namespace        = "prometheus"
   create_namespace = true
+  timeout          = 600
+  wait             = false
 
   set = [
     {
