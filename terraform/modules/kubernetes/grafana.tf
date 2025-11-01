@@ -10,7 +10,7 @@
 #       instances = 1
 #       storage = {
 #         size         = "10Gi"
-#         storageClass = "longhorn"
+#         storageClass = "longhorn-static"
 #       }
 #       bootstrap = {
 #         initdb = {
