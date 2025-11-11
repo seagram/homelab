@@ -5,7 +5,7 @@ terraform {
       version = "~> 6.0"
     }
     tailscale = {
-      source = "tailscale/tailscale"
+      source  = "tailscale/tailscale"
       version = "0.23.0"
     }
   }
@@ -18,12 +18,12 @@ resource "tailscale_tailnet_key" "this" {
   description   = "AWS EC2 for HashiCorp Vault"
 }
 
-data "aws_ami" "ubuntu" {
+data "aws_ami" "debian" {
   most_recent = true
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd*/ubuntu-noble-24.04-amd64-server-*"]
+    values = ["debian-13-amd64-*"]
   }
 
   filter {
@@ -36,7 +36,8 @@ data "aws_ami" "ubuntu" {
     values = ["hvm"]
   }
 
-  owners = ["099720109477"]
+  owners = ["136693071363"]
+
 }
 
 
@@ -55,20 +56,20 @@ resource "aws_security_group" "vault" {
 }
 
 resource "aws_instance" "vault" {
-  depends_on = [tailscale_tailnet_key.this, aws_security_group.vault]
-  ami = data.aws_ami.ubuntu.id
-  instance_type = "t2.micro"
+  depends_on    = [tailscale_tailnet_key.this, aws_security_group.vault]
+  ami           = data.aws_ami.debian.id
+  instance_type = "t3.nano"
 
-  vpc_security_group_ids      = [aws_security_group.vault.id]
-  iam_instance_profile        = aws_iam_instance_profile.vault.name
+  vpc_security_group_ids = [aws_security_group.vault.id]
+  iam_instance_profile   = aws_iam_instance_profile.vault.name
 
   user_data = <<-EOF
     #cloud-config
     ssh_pwauth: false
     disable_root: true
     runcmd:
-      - ['touch', '/home/ubuntu/.hushlogin']
-      - ['chown', 'ubuntu:ubuntu', '/home/ubuntu/.hushlogin']
+      - ['touch', '/home/admin/.hushlogin']
+      - ['chown', 'admin:admin', '/home/admin/.hushlogin']
       - ['hostnamectl', 'set-hostname', 'vault']
       - ['sh', '-c', 'curl -fsSL https://tailscale.com/install.sh | sh']
       - ['tailscale', 'up', '--auth-key=${tailscale_tailnet_key.this.key}', '--hostname=vault']

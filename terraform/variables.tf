@@ -9,7 +9,7 @@ variable "tags" {
 
 variable "enable_aws" {
   type    = bool
-  default = false
+  default = true
 }
 
 variable "enable_worker_nodes" {
