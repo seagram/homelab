@@ -1,32 +1,31 @@
 variable "cluster_name" {
-    type = string
-    default = "homelab"
+  type    = string
+  default = "homelab"
 }
 
 variable "default_gateway" {
-    type = string
+  type = string
 }
 
 variable "control_plane_ip" {
-    type = string
+  type = string
 }
 
 variable "worker_node_1_ip" {
-    type = string
+  type = string
 }
 
 variable "worker_node_2_ip" {
-    type = string
+  type = string
 }
 
 variable "talos_version" {
   type = string
 }
 
-variable "vm_triggers" {
-  description = "VM IDs to trigger configuration reapplication when VMs change"
-  type        = map(string)
-  default     = {}
+variable "enable_worker_nodes" {
+  type    = bool
+  default = false
 }
 
 variable "tailscale_tailnet_key" {
@@ -38,4 +37,14 @@ variable "tailscale_tailnet_key" {
 variable "installer_image_url" {
   description = "Talos installer image URL from the image factory"
   type        = string
+}
+
+variable "kubeconfig_path" {
+  type    = string
+  default = "~/.config/kube/config"
+}
+
+variable "talosconfig_path" {
+  type    = string
+  default = "~/.config/talos/config"
 }

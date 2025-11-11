@@ -1,0 +1,23 @@
+defaultSettings:
+  defaultReplicaCount: 1 # must be equal to number of nodes
+
+persistence:
+  defaultClassReplicaCount: 1 # must be equal to number of nodes
+
+longhornDriver:
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+
+longhornUI:
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+
+longhornManager:
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule

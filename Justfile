@@ -1,22 +1,27 @@
-# ===========================================
-# Scripts
-# ===========================================
+#===========================================#
+#                 scripts                   #
+#===========================================#
+
+check-dependencies:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    for cmd in terraform ansible kubectl talosctl; do
+        if ! command -v $cmd &> /dev/null; then
+            echo "$cmd not found!"
+            exit 1
+        else
+            echo "✓ $cmd"
+        fi
+    done
+
 
 create-proxmox-usb:
     #!/usr/bin/env bash
     set -euo pipefail
-    if [ ! -f "proxmox.iso" ]; then
-        echo "Downloading Proxmox ISO..."
-        wget -O proxmox.iso https://enterprise.proxmox.com/iso/proxmox-ve_9.0-1.iso
-    else
-        echo "✓ proxmox.iso already exists"
-    fi
-    if [ ! -f "proxmox.dmg" ]; then
-        echo "Converting ISO to DMG format..."
-        hdiutil convert proxmox.iso -format UDRW -o proxmox.dmg
-    else
-        echo "✓ proxmox.dmg already exists"
-    fi
+    echo "Downloading Proxmox ISO..."
+    wget -O proxmox.iso https://enterprise.proxmox.com/iso/proxmox-ve_9.0-1.iso
+    echo "Converting ISO to DMG format..."
+    hdiutil convert proxmox.iso -format UDRW -o proxmox.dmg
     echo ""
     echo "Available external disks:"
     diskutil list | grep "external, physical" | awk '{print $1}'

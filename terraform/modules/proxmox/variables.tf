@@ -1,22 +1,22 @@
 variable "cluster_name" {
-    type = string
-    default = "homelab"
+  type    = string
+  default = "homelab"
 }
 
 variable "default_gateway" {
-    type = string
+  type = string
 }
 
 variable "control_plane_ip" {
-    type = string
+  type = string
 }
 
 variable "worker_node_1_ip" {
-    type = string
+  type = string
 }
 
 variable "worker_node_2_ip" {
-    type = string
+  type = string
 }
 
 variable "talos_version" {
@@ -26,4 +26,9 @@ variable "talos_version" {
 variable "tailscale_tailnet_key" {
   type      = string
   sensitive = true
+}
+
+variable "enable_worker_nodes" {
+  type    = bool
+  default = false
 }

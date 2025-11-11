@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     talos = {
-      source = "siderolabs/talos"
+      source  = "siderolabs/talos"
       version = "0.9.0"
     }
     tailscale = {
@@ -11,24 +11,28 @@ terraform {
 }
 
 locals {
-  nodes = {
-    control_plane = {
-      ip           = var.control_plane_ip
-      machine_type = "controlplane"
-    }
-    worker_1 = {
-      ip           = var.worker_node_1_ip
-      machine_type = "worker"
-    }
-    worker_2 = {
-      ip           = var.worker_node_2_ip
-      machine_type = "worker"
-    }
-  }
+  nodes = merge(
+    {
+      control_plane = {
+        ip           = var.control_plane_ip
+        machine_type = "controlplane"
+      }
+    },
+    var.enable_worker_nodes ? {
+      worker_1 = {
+        ip           = var.worker_node_1_ip
+        machine_type = "worker"
+      }
+      worker_2 = {
+        ip           = var.worker_node_2_ip
+        machine_type = "worker"
+      }
+    } : {}
+  )
 }
 
 resource "talos_machine_secrets" "this" {
-    talos_version = var.talos_version
+  talos_version = var.talos_version
 }
 
 data "talos_client_configuration" "this" {
@@ -44,16 +48,6 @@ data "talos_machine_configuration" "this" {
   cluster_endpoint = "https://${var.control_plane_ip}:6443"
   machine_type     = each.value.machine_type
   machine_secrets  = talos_machine_secrets.this.machine_secrets
-}
-
-resource "terraform_data" "vm_trigger" {
-  for_each = {
-    "control_plane" = "control-plane"
-    "worker_1"      = "worker-node-1"
-    "worker_2"      = "worker-node-2"
-  }
-
-  input = lookup(var.vm_triggers, each.value, "")
 }
 
 resource "talos_machine_configuration_apply" "this" {
@@ -83,14 +77,6 @@ resource "talos_machine_configuration_apply" "this" {
       ]
     })
   ]
-
-  lifecycle {
-    replace_triggered_by = [
-      terraform_data.vm_trigger["control_plane"],
-      terraform_data.vm_trigger["worker_1"],
-      terraform_data.vm_trigger["worker_2"]
-    ]
-  }
 }
 
 resource "talos_machine_bootstrap" "this" {
@@ -137,12 +123,12 @@ locals {
 
 resource "local_file" "kubeconfig" {
   content         = local.kubeconfig_with_tailnet
-  filename        = "${path.root}/../kubeconfig"
+  filename        = pathexpand(var.kubeconfig_path)
   file_permission = "0600"
 }
 
 resource "local_file" "talosconfig" {
   content         = data.talos_client_configuration.tailnet.talos_config
-  filename        = "${path.root}/../talosconfig"
+  filename        = pathexpand(var.talosconfig_path)
   file_permission = "0600"
 }

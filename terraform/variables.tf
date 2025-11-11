@@ -7,12 +7,12 @@ variable "tags" {
   default = {}
 }
 
-variable "enable_secrets" {
+variable "enable_aws" {
   type    = bool
   default = false
 }
 
-variable "enable_aws" {
+variable "enable_worker_nodes" {
   type    = bool
   default = false
 }
@@ -83,21 +83,11 @@ variable "proxmox_api_token" {
   sensitive = true
 }
 
-variable "root_password" {
-  type      = string
-  sensitive = true
-}
-
 #############################
 #         kubernetes        #
 #############################
 
 variable "admin_password" {
-  type      = string
-  sensitive = true
-}
-
-variable "digital_ocean_token" {
   type      = string
   sensitive = true
 }
@@ -111,7 +101,12 @@ variable "talos_version" {
   default = "v1.11.3"
 }
 
-variable "grafana_cloud_token" {
-  type      = string
-  sensitive = true
+variable "kubeconfig_path" {
+  type    = string
+  default = "~/.config/kube/config"
+}
+
+variable "talosconfig_path" {
+  type    = string
+  default = "~/.config/talos/config"
 }

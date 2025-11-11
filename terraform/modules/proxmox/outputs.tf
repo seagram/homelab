@@ -5,5 +5,5 @@ output "vm_ids" {
 }
 
 output "installer_image_url" {
-  value       = data.talos_image_factory_urls.this.urls.installer
+  value = data.talos_image_factory_urls.this.urls.installer
 }

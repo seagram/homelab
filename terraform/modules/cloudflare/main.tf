@@ -12,17 +12,30 @@ terraform {
 }
 
 locals {
-  cnames = toset(["proxmox", "rss"])
+  direct_cnames  = toset(["proxmox"])
+  traefik_cnames = toset(["rss"])
 }
 
-resource "cloudflare_dns_record" "cname" {
-  for_each = local.cnames
+resource "cloudflare_dns_record" "direct_cname" {
+  for_each = local.direct_cnames
 
   zone_id = var.cloudflare_zone_id
   name    = each.key
   ttl     = 1
   type    = "CNAME"
-  comment = "CNAME for ${each.key}"
+  comment = "Direct CNAME for ${each.key}"
   content = "${each.key}.${var.tailscale_magic_dns_domain}"
+  proxied = false
+}
+
+resource "cloudflare_dns_record" "traefik_cname" {
+  for_each = local.traefik_cnames
+
+  zone_id = var.cloudflare_zone_id
+  name    = each.key
+  ttl     = 1
+  type    = "CNAME"
+  comment = "Traefik-routed CNAME for ${each.key}"
+  content = "traefik.${var.tailscale_magic_dns_domain}"
   proxied = false
 }

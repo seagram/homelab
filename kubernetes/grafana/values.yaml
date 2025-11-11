@@ -1,0 +1,13 @@
+adminPassword: ${GRAFANA_ADMIN_PASSWORD}
+
+persistence:
+  enabled: false
+
+database:
+  type: postgres
+  host: grafana-postgres-rw.grafana.svc.cluster.local:5432
+  name: grafana
+  user: grafana
+  passwordSecret: grafana-postgres-app
+  passwordKey: password
+  sslmode: disable

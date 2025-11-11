@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pgadmin4-ingress
+  namespace: pgadmin4
+spec:
+  ingressClassName: tailscale
+  defaultBackend:
+    service:
+      name: pgadmin4
+      port:
+        number: 80
+  tls:
+    - hosts:
+        - pgadmin
