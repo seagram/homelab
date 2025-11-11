@@ -1,0 +1,16 @@
+---
+- name: Disable power off on lid close
+  ansible.builtin.lineinfile:
+    path: "{{ logind_conf_path }}"
+    regexp: "^#?{{ item.key }}="
+    line: "{{ item.key }}={{ item.value }}"
+    backup: yes
+  loop: "{{ disable_poweroff_lid_keys }}"
+  register: logind_config_changed
+
+- name: Restart systemd-logind
+  ansible.builtin.systemd:
+    name: systemd-logind
+    state: restarted
+    daemon_reload: yes
+  when: logind_config_changed is changed

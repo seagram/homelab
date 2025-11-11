@@ -1,0 +1,65 @@
+---
+- name: Check if SSH password authentication is already disabled
+  ansible.builtin.command: grep -E "^PasswordAuthentication=no" /etc/ssh/sshd_config
+  register: password_auth_check
+  changed_when: false
+  failed_when: false
+
+- name: Disable SSH password authentication
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?PasswordAuthentication="
+    line: "PasswordAuthentication=no"
+    backup: yes
+  register: ssh_config_changed
+  when: password_auth_check.rc != 0
+
+- name: Restart SSH service
+  ansible.builtin.systemd:
+    name: ssh
+    state: restarted
+  when: ssh_config_changed is changed
+
+- name: Check if UFW is installed
+  ansible.builtin.command: which ufw
+  register: ufw_installed
+  changed_when: false
+  failed_when: false
+
+- name: Install UFW
+  ansible.builtin.apt:
+    name: ufw
+    state: present
+    update_cache: yes
+  when: ufw_installed.rc != 0
+
+- name: Check UFW status
+  ansible.builtin.command: ufw status
+  register: ufw_status
+  changed_when: false
+  failed_when: false
+
+- name: Check if UFW is already configured
+  ansible.builtin.shell: ufw status | grep -q "22/tcp.*ALLOW.*Anywhere on tailscale0"
+  register: ufw_configured
+  changed_when: false
+  failed_when: false
+
+- name: Reset UFW to defaults
+  community.general.ufw:
+    state: reset
+  when: ufw_configured.rc != 0
+
+- name: Allow SSH access only through Tailscale
+  community.general.ufw:
+    rule: allow
+    interface: tailscale0
+    port: "22"
+    proto: tcp
+    direction: in
+  when: ufw_configured.rc != 0
+
+- name: Enable UFW
+  community.general.ufw:
+    state: enabled
+  when: "'Status: active' not in ufw_status.stdout"

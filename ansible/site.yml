@@ -1,0 +1,42 @@
+---
+- name: Configure SSH security
+  hosts: all
+  become: true
+  roles:
+    - ssh_security
+
+- name: Disable power off on lid close
+  hosts: all
+  become: true
+  roles:
+    - disable_poweroff
+
+- name: Install and configure Tailscale
+  hosts: all
+  become: true
+  roles:
+    - tailscale
+
+- name: Update system packages
+  hosts: all
+  become: true
+  roles:
+    - apt_update
+
+- name: Prepare system for Vault
+  hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - robertdebock.bootstrap
+    - robertdebock.core_dependencies
+    - robertdebock.hashicorp
+
+- name: Install and configure HashiCorp Vault
+  hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - role: robertdebock.vault
+      vault_hardening_disable_swap: false
+    - vault
