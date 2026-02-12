@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 echo "Downloading Proxmox ISO..."
-wget -O proxmox.iso https://enterprise.proxmox.com/iso/proxmox-ve_9.0-1.iso
+curl -Lo proxmox.iso https://enterprise.proxmox.com/iso/proxmox-ve_9.0-1.iso
 echo "Converting ISO to DMG format..."
 hdiutil convert proxmox.iso -format UDRW -o proxmox.dmg
 echo ""
