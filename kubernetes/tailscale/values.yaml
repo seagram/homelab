@@ -3,7 +3,6 @@ oauth:
   clientSecret: ${TAILSCALE_OAUTH_CLIENT_SECRET}
 
 operatorConfig:
-  hostname: tailscale-operator
   tolerations:
     - key: node-role.kubernetes.io/control-plane
       operator: Exists

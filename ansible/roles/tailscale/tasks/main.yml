@@ -63,6 +63,7 @@
   when: tailscale_connected is changed or not ssh_status.status.ActiveState == "active"
 
 - name: Configure Tailscale serve
+  # ansible.builtin.command: tailscale serve --service=svc:proxmox --https=443 --bg https+insecure://localhost:8006
   ansible.builtin.command: tailscale serve --bg https+insecure://localhost:8006
   when: tailscale_status.rc == 0 or tailscale_connected is changed
   changed_when: true

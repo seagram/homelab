@@ -1,11 +1,14 @@
 ---
 - name: Disable power off on lid close
   ansible.builtin.lineinfile:
-    path: "{{ logind_conf_path }}"
+    path: /etc/systemd/logind.conf
     regexp: "^#?{{ item.key }}="
     line: "{{ item.key }}={{ item.value }}"
     backup: yes
-  loop: "{{ disable_poweroff_lid_keys }}"
+  loop:
+    - { key: "HandleLidSwitch", value: "ignore" }
+    - { key: "HandleLidSwitchDocked", value: "ignore" }
+    - { key: "HandleLidSwitchExternalPower", value: "ignore" }
   register: logind_config_changed
 
 - name: Restart systemd-logind

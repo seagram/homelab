@@ -1,5 +1,0 @@
----
-vault_s3_bucket: "seagram-homelab-vault-storage"
-vault_s3_region: "us-east-1"
-vault_secret_shares: 5
-vault_secret_threshold: 3

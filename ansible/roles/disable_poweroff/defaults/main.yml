@@ -1,6 +1,0 @@
----
-disable_poweroff_lid_keys:
-  - { key: "HandleLidSwitch", value: "ignore" }
-  - { key: "HandleLidSwitchDocked", value: "ignore" }
-  - { key: "HandleLidSwitchExternalPower", value: "ignore" }
-logind_conf_path: "/etc/systemd/logind.conf"
