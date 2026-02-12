@@ -7,10 +7,6 @@ terraform {
     encrypt      = true
   }
   required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 6.0"
-    }
     proxmox = {
       source  = "bpg/proxmox"
       version = "0.85.0"
@@ -31,11 +27,11 @@ terraform {
       source  = "siderolabs/talos"
       version = "0.9.0"
     }
+    ansible = {
+      version = "~> 1.3.0"
+      source  = "ansible/ansible"
+    }
   }
-}
-
-provider "aws" {
-  region = "us-east-1"
 }
 
 provider "cloudflare" {

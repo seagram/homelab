@@ -2,12 +2,6 @@ module "tailscale" {
   source = "./modules/tailscale"
 }
 
-module "aws" {
-  depends_on = [module.tailscale]
-  count      = var.enable_aws ? 1 : 0
-  source     = "./modules/aws"
-}
-
 module "proxmox" {
   depends_on            = [module.tailscale]
   source                = "./modules/proxmox"
