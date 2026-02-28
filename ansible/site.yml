@@ -1,24 +1,24 @@
 ---
+- name: Update system packages
+  hosts: proxmox-ssh
+  become: true
+  roles:
+    - apt_update
+
+- name: Install and configure Tailscale
+  hosts: proxmox-ssh
+  become: true
+  roles:
+    - tailscale
+
 - name: Configure SSH security
-  hosts: all
+  hosts: proxmox-ssh
   become: true
   roles:
     - ssh_security
 
 - name: Disable power off on lid close
-  hosts: all
+  hosts: proxmox-ssh
   become: true
   roles:
     - disable_poweroff
-
-- name: Install and configure Tailscale
-  hosts: all
-  become: true
-  roles:
-    - tailscale
-
-- name: Update system packages
-  hosts: all
-  become: true
-  roles:
-    - apt_update
