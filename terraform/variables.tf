@@ -88,7 +88,7 @@ variable "admin_password" {
 
 variable "talos_version" {
   type    = string
-  default = "v1.11.3"
+  default = "v1.12.4"
 }
 
 variable "kubeconfig_path" {
