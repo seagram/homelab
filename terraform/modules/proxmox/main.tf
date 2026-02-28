@@ -12,30 +12,26 @@ terraform {
 }
 
 locals {
-  vms = merge(
-    {
-      control-plane = {
-        vm_id      = 101
-        name       = "control-plane"
-        ip_address = "${var.control_plane_ip}"
-        memory     = var.enable_worker_nodes ? 4096 : 12288
-      }
-    },
-    var.enable_worker_nodes ? {
-      worker-node-1 = {
-        vm_id      = 102
-        name       = "worker-node-1"
-        ip_address = "${var.worker_node_1_ip}"
-        memory     = 3072
-      }
-      worker-node-2 = {
-        vm_id      = 103
-        name       = "worker-node-2"
-        ip_address = "${var.worker_node_2_ip}"
-        memory     = 3072
-      }
-    } : {}
-  )
+  vms = {
+    control-plane = {
+      vm_id      = 101
+      name       = "control-plane"
+      ip_address = "${var.control_plane_ip}"
+      memory     = 4096
+    }
+    worker-node-1 = {
+      vm_id      = 102
+      name       = "worker-node-1"
+      ip_address = "${var.worker_node_1_ip}"
+      memory     = 3072
+    }
+    worker-node-2 = {
+      vm_id      = 103
+      name       = "worker-node-2"
+      ip_address = "${var.worker_node_2_ip}"
+      memory     = 3072
+    }
+  }
 }
 
 data "talos_image_factory_extensions_versions" "versions" {
@@ -83,7 +79,7 @@ resource "proxmox_virtual_environment_vm" "virtual_machines" {
   on_boot = true
 
   cpu {
-    cores = var.enable_worker_nodes ? 2 : 6
+    cores = 2
     type = "x86-64-v2-AES"
   }
 
@@ -129,6 +125,6 @@ resource "proxmox_virtual_environment_vm" "virtual_machines" {
   disk {
     datastore_id = "local-lvm"
     interface    = "virtio0"
-    size         = var.enable_worker_nodes ? 50 : 300
+    size         = 50
   }
 }

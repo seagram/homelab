@@ -23,11 +23,6 @@ variable "talos_version" {
   type = string
 }
 
-variable "enable_worker_nodes" {
-  type    = bool
-  default = false
-}
-
 variable "tailscale_tailnet_key" {
   description = "Tailscale tailnet authentication key for the extension service"
   type        = string

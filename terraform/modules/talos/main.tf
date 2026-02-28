@@ -11,24 +11,20 @@ terraform {
 }
 
 locals {
-  nodes = merge(
-    {
-      control_plane = {
-        ip           = var.control_plane_ip
-        machine_type = "controlplane"
-      }
-    },
-    var.enable_worker_nodes ? {
-      worker_1 = {
-        ip           = var.worker_node_1_ip
-        machine_type = "worker"
-      }
-      worker_2 = {
-        ip           = var.worker_node_2_ip
-        machine_type = "worker"
-      }
-    } : {}
-  )
+  nodes = {
+    control_plane = {
+      ip           = var.control_plane_ip
+      machine_type = "controlplane"
+    }
+    worker_1 = {
+      ip           = var.worker_node_1_ip
+      machine_type = "worker"
+    }
+    worker_2 = {
+      ip           = var.worker_node_2_ip
+      machine_type = "worker"
+    }
+  }
 }
 
 resource "talos_machine_secrets" "this" {

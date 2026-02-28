@@ -10,7 +10,6 @@ module "proxmox" {
   worker_node_1_ip      = var.worker_node_1_ip
   worker_node_2_ip      = var.worker_node_2_ip
   talos_version         = var.talos_version
-  enable_worker_nodes   = var.enable_worker_nodes
   tailscale_tailnet_key = module.tailscale.tailscale_tailnet_key
 }
 
@@ -18,7 +17,6 @@ module "talos" {
   depends_on            = [module.proxmox]
   source                = "./modules/talos"
   default_gateway       = var.default_gateway
-  enable_worker_nodes   = var.enable_worker_nodes
   control_plane_ip      = var.control_plane_ip
   worker_node_1_ip      = var.worker_node_1_ip
   worker_node_2_ip      = var.worker_node_2_ip

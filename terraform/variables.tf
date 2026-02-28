@@ -7,11 +7,6 @@ variable "tags" {
   default = {}
 }
 
-variable "enable_worker_nodes" {
-  type    = bool
-  default = false
-}
-
 #############################
 #         networking        #
 #############################

@@ -28,7 +28,3 @@ variable "tailscale_tailnet_key" {
   sensitive = true
 }
 
-variable "enable_worker_nodes" {
-  type    = bool
-  default = false
-}
