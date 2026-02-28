@@ -3,6 +3,8 @@
   hosts: proxmox-ssh
   become: true
   tasks:
+    # Note: ensure to run PVE post-install script before playbook.
+    # Source: https://community-scripts.github.io/ProxmoxVE/scripts?id=post-pve-install
     - import_tasks: tasks/apt_update.yml
     - import_tasks: tasks/tailscale.yml
     - import_tasks: tasks/ssh_security.yml
