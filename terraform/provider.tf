@@ -1,11 +1,5 @@
 terraform {
-  backend "s3" {
-    bucket       = "seagram-terraform-state-bucket"
-    key          = "homelab/terraform.tfstate"
-    region       = "us-east-1"
-    use_lockfile = true
-    encrypt      = true
-  }
+  backend "local" {}
   required_providers {
     proxmox = {
       source  = "bpg/proxmox"
