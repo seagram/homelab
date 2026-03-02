@@ -9,3 +9,4 @@
     - import_tasks: tasks/tailscale.yml
     - import_tasks: tasks/ssh_security.yml
     - import_tasks: tasks/disable_poweroff.yml
+    - import_tasks: tasks/talos_image.yml

@@ -1,0 +1,34 @@
+---
+- name: Set Talos version
+  ansible.builtin.set_fact:
+    talos_version: "v1.12.4"
+
+- name: Create Talos image schematic
+  ansible.builtin.uri:
+    url: https://factory.talos.dev/schematics
+    method: POST
+    body_format: raw
+    body: |
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/iscsi-tools
+            - siderolabs/qemu-guest-agent
+            - siderolabs/tailscale
+            - siderolabs/util-linux-tools
+    headers:
+      Content-Type: text/yaml
+    return_content: true
+    status_code: [200, 201]
+  register: schematic
+  tags: talos_image
+
+- name: Download Talos ISO
+  ansible.builtin.command:
+    cmd: >
+      curl -L -s
+      -A "Mozilla/5.0 (X11; Linux x86_64)"
+      -o "/var/lib/vz/template/iso/talos-{{ talos_version }}-nocloud-amd64.iso"
+      "https://factory.talos.dev/image/{{ schematic.json.id }}/{{ talos_version }}/nocloud-amd64.iso"
+    creates: "/var/lib/vz/template/iso/talos-{{ talos_version }}-nocloud-amd64.iso"
+  tags: talos_image
