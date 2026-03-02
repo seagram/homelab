@@ -62,16 +62,6 @@ data "talos_image_factory_urls" "this" {
   platform      = "nocloud"
 }
 
-resource "proxmox_virtual_environment_download_file" "talos_image" {
-  content_type = "iso"
-  datastore_id = "local"
-  node_name    = "proxmox"
-  file_name    = "talos-${var.talos_version}-nocloud-amd64.iso"
-  url          = data.talos_image_factory_urls.this.urls.iso
-
-  overwrite           = false
-  overwrite_unmanaged = true
-}
 
 resource "proxmox_virtual_environment_vm" "virtual_machines" {
   for_each = local.vms
@@ -107,7 +97,7 @@ resource "proxmox_virtual_environment_vm" "virtual_machines" {
   }
 
   cdrom {
-    file_id = proxmox_virtual_environment_download_file.talos_image.id
+    file_id = "local:iso/talos-${var.talos_version}-nocloud-amd64.iso"
   }
 
   initialization {
