@@ -104,7 +104,7 @@ resource "proxmox_virtual_environment_vm" "virtual_machines" {
     ip_config {
       ipv4 {
         address = "${each.value.ip_address}/24"
-        gateway = "10.0.0.1"
+        gateway = "${var.default_gateway}"
       }
       ipv6 {
         address = "dhcp"

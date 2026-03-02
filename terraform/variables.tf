@@ -13,27 +13,27 @@ variable "tags" {
 
 variable "default_gateway" {
   type    = string
-  default = "10.0.0.1"
+  default = "192.168.2.1"
 }
 
 variable "proxmox_ip" {
   type    = string
-  default = "10.0.0.10"
+  default = "192.168.2.15"
 }
 
 variable "control_plane_ip" {
   type    = string
-  default = "10.0.0.11"
+  default = "192.168.2.20"
 }
 
 variable "worker_node_1_ip" {
   type    = string
-  default = "10.0.0.12"
+  default = "192.168.2.21"
 }
 
 variable "worker_node_2_ip" {
   type    = string
-  default = "10.0.0.13"
+  default = "192.168.2.22"
 }
 
 #############################
