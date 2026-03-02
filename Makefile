@@ -1,7 +1,9 @@
 include ansible/.env
 export
 
-.PHONY: check-dependencies create-proxmox-usb configure-proxmox-installation
+.PHONY: check-dependencies create-proxmox-usb configure-proxmox-installation terraform-init configure-tailnet-for-k8s deploy-proxmox-vms boostrap-talos-linux-nodes
+
+# Intended to be executed in the order of declaration.
 
 check-dependencies:
 	./scripts/check-dependencies.sh
@@ -11,3 +13,15 @@ create-proxmox-usb:
 
 configure-proxmox-installation:
 	cd ansible && ansible-playbook site.yml
+
+terraform-init:
+	cd terraform && terraform init
+
+configure-tailnet-for-k8s:
+	cd terraform && terraform apply -target=module tailscale -auto-approve
+
+deploy-proxmox-vms:
+	cd terraform && terraform apply -target=module proxmox -auto-approve
+
+boostrap-talos-linux-nodes:
+	cd terraform && terraform apply -target=module talos -auto-approve
