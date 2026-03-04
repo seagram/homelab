@@ -9,7 +9,9 @@ module "proxmox" {
   control_plane_ip      = var.control_plane_ip
   worker_node_1_ip      = var.worker_node_1_ip
   worker_node_2_ip      = var.worker_node_2_ip
+  nixos_vm_ip           = var.nixos_vm_ip
   talos_version         = var.talos_version
+  nixos_version         = var.nixos_version
   tailscale_tailnet_key = module.tailscale.tailscale_tailnet_key
 }
 
