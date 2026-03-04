@@ -5,6 +5,8 @@
   tasks:
     # Note: ensure to run PVE post-install script before playbook.
     # Source: https://community-scripts.github.io/ProxmoxVE/scripts?id=post-pve-install
+    # Note: ensure to run PVE CPU Scaling Governor script (set to 'powersave') before playbook.
+    # Source: https://community-scripts.github.io/ProxmoxVE/scripts?id=scaling-governor
     - import_tasks: tasks/apt_update.yml
     - import_tasks: tasks/tailscale.yml
     - import_tasks: tasks/ssh_security.yml
