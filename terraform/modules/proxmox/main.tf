@@ -17,22 +17,25 @@ locals {
       vm_id      = 101
       name       = "control-plane"
       ip_address = "${var.control_plane_ip}"
-      memory     = 4096
-      cores      = 4
+      memory     = 2048
+      cores      = 2
+      disk_size = 20
     }
     worker-node-1 = {
       vm_id      = 102
       name       = "worker-node-1"
       ip_address = "${var.worker_node_1_ip}"
-      memory     = 2048
-      cores      = 2
+      memory     = 1024
+      cores      = 1
+      disk_size = 20
     }
     worker-node-2 = {
       vm_id      = 103
       name       = "worker-node-2"
       ip_address = "${var.worker_node_2_ip}"
-      memory     = 2048
-      cores      = 2
+      memory     = 1024
+      cores      = 1
+      disk_size = 20
     }
   }
 }
@@ -118,6 +121,6 @@ resource "proxmox_virtual_environment_vm" "virtual_machines" {
   disk {
     datastore_id = "local-lvm"
     interface    = "virtio0"
-    size         = 50
+    size         = each.value.disk_size
   }
 }
