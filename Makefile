@@ -1,7 +1,7 @@
 include ansible/.env
 export
 
-.PHONY: check-dependencies create-proxmox-usb configure-proxmox-installation terraform-init configure-tailnet-for-k8s deploy-proxmox-vms boostrap-talos-linux-nodes deploy-tailscale-operator
+.PHONY: check-dependencies create-proxmox-usb configure-proxmox-installation terraform-init configure-tailnet-for-k8s deploy-proxmox-vms boostrap-talos-linux-nodes deploy-tailscale-operator deploy-longhorn
 
 # Intended to be executed in the order of declaration.
 
@@ -28,3 +28,7 @@ boostrap-talos-linux-nodes:
 
 deploy-tailscale-operator:
 	./scripts/deploy-tailscale-operator.sh
+
+deploy-longhorn:
+	cd kubernetes/longhorn && helmfile apply
+	kubectl apply -f kubernetes/longhorn/ingress.yaml
