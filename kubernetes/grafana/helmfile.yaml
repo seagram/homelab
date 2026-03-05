@@ -1,0 +1,21 @@
+repositories:
+  - name: grafana
+    url: https://grafana.github.io/helm-charts
+
+releases:
+  - name: grafana
+    namespace: grafana
+    chart: grafana/grafana
+    createNamespace: false  # namespace.yaml manages the namespace
+    wait: true
+    hooks:
+      - events: ["presync"]
+        showlogs: true
+        command: "kubectl"
+        args: ["apply", "-f", "namespace.yaml"]
+      - events: ["presync"]
+        showlogs: true
+        command: "kubectl"
+        args: ["apply", "-f", "postgres-cluster.yaml"]
+    values:
+      - values.yaml
