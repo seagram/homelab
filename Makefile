@@ -1,7 +1,7 @@
 include ansible/.env
 export
 
-.PHONY: check-dependencies create-proxmox-usb configure-proxmox-installation terraform-init configure-tailnet-for-k8s deploy-proxmox-vms boostrap-talos-linux-nodes
+.PHONY: check-dependencies create-proxmox-usb configure-proxmox-installation terraform-init configure-tailnet-for-k8s deploy-proxmox-vms boostrap-talos-linux-nodes deploy-tailscale-operator
 
 # Intended to be executed in the order of declaration.
 
@@ -25,3 +25,6 @@ deploy-proxmox-vms:
 
 boostrap-talos-linux-nodes:
 	cd terraform && terraform apply -target=module talos -auto-approve
+
+deploy-tailscale-operator:
+	./scripts/deploy-tailscale-operator.sh
