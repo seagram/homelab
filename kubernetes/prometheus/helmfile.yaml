@@ -1,0 +1,17 @@
+repositories:
+  - name: prometheus-community
+    url: https://prometheus-community.github.io/helm-charts
+
+releases:
+  - name: prometheus
+    namespace: prometheus
+    chart: prometheus-community/prometheus
+    createNamespace: false  # namespace.yaml manages the namespace
+    wait: true
+    hooks:
+      - events: ["presync"]
+        showlogs: true
+        command: "kubectl"
+        args: ["apply", "-f", "namespace.yaml"]
+    values:
+      - values.yaml
