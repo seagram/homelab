@@ -1,7 +1,7 @@
 include ansible/.env
 export
 
-.PHONY: check-dependencies create-proxmox-usb configure-proxmox-installation terraform-init configure-tailnet-for-k8s deploy-proxmox-vms boostrap-talos-linux-nodes deploy-tailscale-operator deploy-longhorn deploy-prometheus deploy-cnpg deploy-grafana
+.PHONY: check-dependencies create-proxmox-usb configure-proxmox-installation terraform-init configure-tailnet-for-k8s deploy-proxmox-vms boostrap-talos-linux-nodes deploy-tailscale-operator deploy-longhorn deploy-prometheus deploy-cnpg deploy-grafana deploy-loki
 
 # Intended to be executed in the order of declaration.
 
@@ -43,3 +43,7 @@ deploy-cnpg:
 deploy-grafana: deploy-cnpg
 	cd kubernetes/grafana && helmfile apply
 	kubectl apply -f kubernetes/grafana/ingress.yaml
+
+deploy-loki:
+	cd kubernetes/loki && helmfile apply
+	kubectl apply -f kubernetes/loki/ingress.yaml
