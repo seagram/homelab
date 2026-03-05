@@ -1,5 +1,3 @@
-adminPassword: ${GRAFANA_ADMIN_PASSWORD}
-
 datasources:
   datasources.yaml:
     apiVersion: 1
