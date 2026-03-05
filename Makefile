@@ -29,21 +29,21 @@ boostrap-talos-linux-nodes:
 deploy-tailscale-operator:
 	./scripts/deploy-tailscale-operator.sh
 
-deploy-longhorn:
+deploy-longhorn: deploy-tailscale-operator
 	cd kubernetes/longhorn && helmfile apply
 	kubectl apply -f kubernetes/longhorn/ingress.yaml
 
-deploy-prometheus:
+deploy-prometheus: deploy-tailscale-operator
 	cd kubernetes/prometheus && helmfile apply
 	kubectl apply -f kubernetes/prometheus/ingress.yaml
 
 deploy-cnpg:
 	cd kubernetes/cnpg && helmfile apply
 
-deploy-grafana: deploy-cnpg
-	cd kubernetes/grafana && helmfile apply
-	kubectl apply -f kubernetes/grafana/ingress.yaml
-
-deploy-loki:
+deploy-loki: deploy-tailscale-operator
 	cd kubernetes/loki && helmfile apply
 	kubectl apply -f kubernetes/loki/ingress.yaml
+
+deploy-grafana: deploy-cnpg deploy-loki deploy-tailscale-operator
+	cd kubernetes/grafana && helmfile apply
+	kubectl apply -f kubernetes/grafana/ingress.yaml
