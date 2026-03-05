@@ -17,9 +17,9 @@ locals {
       vm_id         = 101
       name          = "control-plane"
       ip_address    = "${var.control_plane_ip}"
-      memory        = 2048
+      memory        = 4096
       cores         = 2
-      disk_size     = 20
+      disk_size     = 50
       iso           = "talos-${var.talos_version}-nocloud-amd64"
       agent_enabled = true
     }
@@ -27,9 +27,9 @@ locals {
       vm_id         = 102
       name          = "worker-node-1"
       ip_address    = "${var.worker_node_1_ip}"
-      memory        = 1024
-      cores         = 1
-      disk_size     = 20
+      memory        = 4096
+      cores         = 2
+      disk_size     = 50
       iso           = "talos-${var.talos_version}-nocloud-amd64"
       agent_enabled = true
     }
@@ -37,22 +37,22 @@ locals {
       vm_id         = 103
       name          = "worker-node-2"
       ip_address    = "${var.worker_node_2_ip}"
-      memory        = 1024
-      cores         = 1
-      disk_size     = 20
+      memory        = 4096
+      cores         = 2
+      disk_size     = 50
       iso           = "talos-${var.talos_version}-nocloud-amd64"
       agent_enabled = true
     }
-    nixos = {
-      vm_id         = 104
-      name          = "nixos"
-      ip_address    = "${var.nixos_vm_ip}"
-      memory        = 1024
-      cores         = 1
-      disk_size     = 20
-      iso           = "nixos-${var.nixos_version}-minimal-x86_64"
-      agent_enabled = false
-    }
+    # nixos = {
+    #   vm_id         = 104
+    #   name          = "nixos"
+    #   ip_address    = "${var.nixos_vm_ip}"
+    #   memory        = 1024
+    #   cores         = 1
+    #   disk_size     = 20
+    #   iso           = "nixos-${var.nixos_version}-minimal-x86_64"
+    #   agent_enabled = false
+    # }
   }
 }
 
