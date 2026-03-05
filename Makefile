@@ -1,7 +1,7 @@
 include ansible/.env
 export
 
-.PHONY: check-dependencies create-proxmox-usb configure-proxmox-installation terraform-init configure-tailnet-for-k8s deploy-proxmox-vms boostrap-talos-linux-nodes deploy-tailscale-operator deploy-longhorn
+.PHONY: check-dependencies create-proxmox-usb configure-proxmox-installation terraform-init configure-tailnet-for-k8s deploy-proxmox-vms boostrap-talos-linux-nodes deploy-tailscale-operator deploy-longhorn deploy-prometheus deploy-prometheus
 
 # Intended to be executed in the order of declaration.
 
@@ -32,3 +32,7 @@ deploy-tailscale-operator:
 deploy-longhorn:
 	cd kubernetes/longhorn && helmfile apply
 	kubectl apply -f kubernetes/longhorn/ingress.yaml
+
+deploy-prometheus:
+	cd kubernetes/prometheus && helmfile apply
+	kubectl apply -f kubernetes/prometheus/ingress.yaml
