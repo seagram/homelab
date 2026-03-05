@@ -1,5 +1,15 @@
 adminPassword: ${GRAFANA_ADMIN_PASSWORD}
 
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Loki
+        type: loki
+        url: http://loki.loki.svc.cluster.local:3100
+        access: proxy
+        isDefault: false
+
 persistence:
   enabled: false
 
