@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-for cmd in terraform ansible kubectl talosctl helm helmfile; do
+for cmd in terraform ansible kubectl talosctl helm helmfile kubectl; do
     if ! command -v $cmd &> /dev/null; then
         echo "$cmd not found!"
         exit 1
