@@ -7,6 +7,9 @@ terraform {
     tailscale = {
       source = "tailscale/tailscale"
     }
+    local = {
+      source = "hashicorp/local"
+    }
   }
 }
 
