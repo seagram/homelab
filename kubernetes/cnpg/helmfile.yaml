@@ -1,0 +1,15 @@
+repositories:
+  - name: cnpg
+    url: https://cloudnative-pg.github.io/charts
+
+releases:
+  - name: cloudnative-pg
+    namespace: cnpg-system
+    chart: cnpg/cloudnative-pg
+    createNamespace: false  # namespace.yaml manages the namespace
+    wait: true
+    hooks:
+      - events: ["presync"]
+        showlogs: true
+        command: "kubectl"
+        args: ["apply", "-f", "namespace.yaml"]
