@@ -1,7 +1,10 @@
 include ansible/.env
 export
 
-.PHONY: check-dependencies create-proxmox-usb configure-proxmox-installation terraform-init configure-tailnet-for-k8s deploy-proxmox-vms boostrap-talos-linux-nodes deploy-tailscale-operator deploy-longhorn deploy-prometheus deploy-cnpg deploy-grafana deploy-loki
+.PHONY: check-dependencies create-proxmox-usb configure-proxmox-installation terraform-init configure-tailnet-for-k8s deploy-proxmox-vms boostrap-talos-linux-nodes deploy-k8s-services
+
+TAILSCALE_OAUTH_CLIENT_ID = $(shell cd terraform && terraform output -raw tailscale_oauth_id)
+TAILSCALE_OAUTH_CLIENT_SECRET = $(shell cd terraform && terraform output -raw tailscale_oauth_key)
 
 # Intended to be executed in the order of declaration.
 
@@ -26,24 +29,5 @@ deploy-proxmox-vms:
 boostrap-talos-linux-nodes:
 	cd terraform && terraform apply -target=module talos -auto-approve
 
-deploy-tailscale-operator:
-	./scripts/deploy-tailscale-operator.sh
-
-deploy-longhorn: deploy-tailscale-operator
-	cd kubernetes/longhorn && helmfile apply
-	kubectl apply -f kubernetes/longhorn/ingress.yaml
-
-deploy-prometheus: deploy-tailscale-operator
-	cd kubernetes/prometheus && helmfile apply
-	kubectl apply -f kubernetes/prometheus/ingress.yaml
-
-deploy-cnpg:
-	cd kubernetes/cnpg && helmfile apply
-
-deploy-loki: deploy-tailscale-operator
-	cd kubernetes/loki && helmfile apply
-	kubectl apply -f kubernetes/loki/ingress.yaml
-
-deploy-grafana: deploy-cnpg deploy-loki deploy-tailscale-operator
-	cd kubernetes/grafana && helmfile apply
-	kubectl apply -f kubernetes/grafana/ingress.yaml
+deploy-k8s-services:
+	cd kubernetes && helmfile apply
