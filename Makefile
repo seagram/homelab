@@ -17,11 +17,8 @@ create-proxmox-usb:
 configure-proxmox-installation:
 	cd ansible && ansible-playbook site.yml
 
-terraform-init:
-	cd terraform && terraform init
-
 configure-tailnet-for-k8s:
-	cd terraform && terraform apply -target=module tailscale -auto-approve
+	cd terraform && terraform init && terraform apply -target=module tailscale -auto-approve
 
 deploy-proxmox-vms:
 	cd terraform && terraform apply -target=module proxmox -auto-approve
