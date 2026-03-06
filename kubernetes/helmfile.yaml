@@ -1,0 +1,113 @@
+repositories:
+  - name: tailscale
+    url: https://pkgs.tailscale.com/helmcharts
+  - name: longhorn
+    url: https://charts.longhorn.io
+  - name: prometheus-community
+    url: https://prometheus-community.github.io/helm-charts
+  - name: cnpg
+    url: https://cloudnative-pg.github.io/charts
+  - name: grafana
+    url: https://grafana.github.io/helm-charts
+
+releases:
+  - name: tailscale-operator
+    namespace: tailscale
+    chart: tailscale/tailscale-operator
+    createNamespace: true
+    wait: true
+    values:
+      - tailscale/values.yaml
+
+  - name: longhorn
+    namespace: longhorn-system
+    chart: longhorn/longhorn
+    createNamespace: false
+    wait: true
+    needs:
+      - tailscale-operator
+    hooks:
+      - events: ["presync"]
+        showlogs: true
+        command: "kubectl"
+        args: ["apply", "-f", "longhorn/namespace.yaml"]
+      - events: ["postsync"]
+        showlogs: true
+        command: "kubectl"
+        args: ["apply", "-f", "longhorn/ingress.yaml"]
+    values:
+      - longhorn/values.yaml
+
+  - name: prometheus
+    namespace: prometheus
+    chart: prometheus-community/prometheus
+    createNamespace: false
+    wait: true
+    needs:
+      - tailscale-operator
+    hooks:
+      - events: ["presync"]
+        showlogs: true
+        command: "kubectl"
+        args: ["apply", "-f", "prometheus/namespace.yaml"]
+      - events: ["postsync"]
+        showlogs: true
+        command: "kubectl"
+        args: ["apply", "-f", "prometheus/ingress.yaml"]
+    values:
+      - prometheus/values.yaml
+
+  - name: cloudnative-pg
+    namespace: cnpg-system
+    chart: cnpg/cloudnative-pg
+    createNamespace: false
+    wait: true
+    hooks:
+      - events: ["presync"]
+        showlogs: true
+        command: "kubectl"
+        args: ["apply", "-f", "cnpg/namespace.yaml"]
+
+  - name: loki
+    namespace: loki
+    chart: grafana/loki
+    createNamespace: false
+    wait: true
+    needs:
+      - tailscale-operator
+    hooks:
+      - events: ["presync"]
+        showlogs: true
+        command: "kubectl"
+        args: ["apply", "-f", "loki/namespace.yaml"]
+      - events: ["postsync"]
+        showlogs: true
+        command: "kubectl"
+        args: ["apply", "-f", "loki/ingress.yaml"]
+    values:
+      - loki/values.yaml
+
+  - name: grafana
+    namespace: grafana
+    chart: grafana/grafana
+    createNamespace: false
+    wait: true
+    needs:
+      - cloudnative-pg
+      - loki
+      - tailscale-operator
+    hooks:
+      - events: ["presync"]
+        showlogs: true
+        command: "kubectl"
+        args: ["apply", "-f", "grafana/namespace.yaml"]
+      - events: ["presync"]
+        showlogs: true
+        command: "kubectl"
+        args: ["apply", "-f", "grafana/postgres-cluster.yaml"]
+      - events: ["postsync"]
+        showlogs: true
+        command: "kubectl"
+        args: ["apply", "-f", "grafana/ingress.yaml"]
+    values:
+      - grafana/values.yaml
