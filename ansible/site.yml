@@ -13,3 +13,4 @@
     - import_tasks: tasks/disable_poweroff.yml
     - import_tasks: tasks/download_talos_image.yml
     - import_tasks: tasks/download_nixox_image.yml
+    - import_tasks: tasks/download_ubuntu_image.yml

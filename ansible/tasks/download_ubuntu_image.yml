@@ -1,0 +1,5 @@
+---
+- name: Download Ubuntu Server 24.04.4 cloud image
+  ansible.builtin.get_url:
+    url: https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
+    dest: /var/lib/vz/template/iso/noble-server-cloudimg-amd64.img
