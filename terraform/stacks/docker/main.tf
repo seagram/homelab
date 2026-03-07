@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    proxmox = {
-      source  = "bpg/proxmox"
-      version = "0.85.0"
-    }
-  }
-}
-
 resource "proxmox_virtual_environment_vm" "this" {
   name      = "docker-vm"
   vm_id     = 101
@@ -20,8 +11,9 @@ resource "proxmox_virtual_environment_vm" "this" {
   }
 
   memory {
-    dedicated = 12
-    floating  = 0
+    # enable ballooning by making dedicated & floating equal
+    dedicated = 12288
+    floating  = 12288
   }
 
   agent {
@@ -39,8 +31,13 @@ resource "proxmox_virtual_environment_vm" "this" {
     type = "l26"
   }
 
-  cdrom {
-    file_id = "local:iso/${each.value.iso}.iso"
+  disk {
+    datastore_id = "local-lvm"
+    file_id      = "local:iso/noble-server-cloudimg-amd64.qcow2"
+    interface    = "virtio0"
+    iothread     = true
+    discard      = "on"
+    size         = 100
   }
 
   initialization {
@@ -56,11 +53,5 @@ resource "proxmox_virtual_environment_vm" "this" {
     dns {
       servers = ["8.8.8.8", "8.8.4.4", "1.1.1.1"]
     }
-  }
-
-  disk {
-    datastore_id = "local-lvm"
-    interface    = "virtio0"
-    size         = 100
   }
 }

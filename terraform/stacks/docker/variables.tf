@@ -4,6 +4,11 @@ variable "default_gateway" {
 }
 
 variable "vm_ip" {
-    type = string
-    default = "192.168.2.25"
+  type    = string
+  default = "192.168.2.25"
+}
+
+variable "proxmox_api_token" {
+  type      = string
+  sensitive = true
 }
