@@ -5,6 +5,7 @@ ansible/.env
 **/*.tfstate.*
 **/terraform.tfvars
 **/*.auto.pkrvars.hcl
+**/downloaded_iso_path/
 **/*.bak
 **/.DS_Store
 .talos/
