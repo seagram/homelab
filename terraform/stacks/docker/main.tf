@@ -33,7 +33,7 @@ resource "proxmox_virtual_environment_vm" "this" {
 
   disk {
     datastore_id = "local-lvm"
-    file_id      = "local:iso/noble-server-cloudimg-amd64.qcow2"
+    file_id      = "local:iso/debian-13-nocloud-amd64.img"
     interface    = "virtio0"
     iothread     = true
     discard      = "on"
