@@ -5,14 +5,15 @@
   vars:
     ansible_host: proxmox
     ansible_user: root
+    iso_path: /var/lib/vz/template/iso/ubuntu-24.04.4-live-server-amd64.iso
   tasks:
     - name: Check if iso already exists
       ansible.builtin.stat:
-        path: /var/lib/vz/template/iso/ubuntu-24.04.4-live-server-amd64.iso
+        path: "{{ iso_path }}"
       register: iso_file
 
     - name: Download ubuntu 24.04.4 live server iso
       ansible.builtin.get_url:
         url: https://releases.ubuntu.com/24.04/ubuntu-24.04.4-live-server-amd64.iso
-        dest: /var/lib/vz/template/iso/ubuntu-24.04.4-live-server-amd64.iso
+        dest: "{{ iso_path }}"
       when: not iso_file.stat.exists
