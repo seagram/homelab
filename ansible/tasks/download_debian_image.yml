@@ -1,0 +1,6 @@
+---
+- name: Download Debian 13 cloud image
+  ansible.builtin.get_url:
+    url: https://cloud.debian.org/images/cloud/trixie/latest/debian-13-nocloud-amd64.qcow2
+    dest: /var/lib/vz/template/iso/debian-13-nocloud-amd64.img
+    force: true
