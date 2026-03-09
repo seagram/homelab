@@ -1,0 +1,12 @@
+---
+- name: Download ubuntu server iso to proxmox
+  hosts: proxmox
+  gather_facts: false
+  vars:
+    ansible_host: proxmox
+    ansible_user: root
+  tasks:
+    - name: Download ubuntu 24.04.4 live server iso
+      ansible.builtin.get_url:
+        url: https://releases.ubuntu.com/24.04/ubuntu-24.04.4-live-server-amd64.iso
+        dest: /var/lib/vz/template/iso/ubuntu-24.04.4-live-server-amd64.iso

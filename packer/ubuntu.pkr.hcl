@@ -19,10 +19,8 @@ source "proxmox-iso" "ubuntu" {
   template_description = "ubuntu 24.04 LTS w/cloud-init"
 
   boot_iso {
-    iso_url          = "https://releases.ubuntu.com/24.04/ubuntu-24.04.4-live-server-amd64.iso"
-    iso_checksum     = "file:https://releases.ubuntu.com/24.04/SHA256SUMS"
-    iso_storage_pool = "local"
-    unmount          = true
+    iso_file = "local:iso/ubuntu-24.04.4-live-server-amd64.iso"
+    unmount  = true
   }
 
   os       = "l26"
