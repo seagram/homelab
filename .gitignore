@@ -4,7 +4,7 @@ ansible/.env
 **/*.tfstate
 **/*.tfstate.*
 **/terraform.tfvars
-terraform.auto.pkrvars.hcl
+**/*.auto.pkrvars.hcl
 **/*.bak
 **/.DS_Store
 .talos/
