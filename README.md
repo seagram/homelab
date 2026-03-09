@@ -20,7 +20,7 @@ Proxmox VE 8.4
 
 #### Talos Linux (v1.12) kubernetes cluster
 
-| VM | Resources | Workloads |
+| VM | Resources | Services |
 |---|---|---|
 | **control-plane** | 2 CPU, 2GB RAM, 20GB SSD | traefik, cert-manager, uptime-kuma |
 | **worker-node-1** | 1 CPU, 1GB RAM, 20GB SSD | postgres, grafana, n8n |
