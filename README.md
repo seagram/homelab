@@ -32,6 +32,3 @@ Proxmox VE 8.4
 |---|---|---|
 | **nixos** | 1 CPU, 1GB RAM, 20GB SSD | NixOS v25.11 |
 | **ubuntu** | 6 CPU, 12GB RAM, 50GB SDD | Ubuntu 24.04 LTS |
-
-## Roadmap
-- [ ] Migrate Makefiles to [mise](https://github.com/jdx/mise)
