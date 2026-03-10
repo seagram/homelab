@@ -83,8 +83,8 @@ data "talos_image_factory_urls" "this" {
 
 resource "proxmox_virtual_environment_vm" "virtual_machines" {
   for_each  = local.vms
-  name      = each.value.name
   vm_id     = each.value.vm_id
+  name      = each.value.name
   tags      = ["terraform"]
   node_name = "proxmox"
   on_boot   = true

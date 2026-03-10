@@ -45,7 +45,9 @@ source "proxmox-iso" "ubuntu" {
   cloud_init              = true
   cloud_init_storage_pool = "local-lvm"
 
-  http_directory = "http"
+  http_directory    = "http"
+  http_bind_address = "0.0.0.0"
+  http_ip           = var.http_ip
 
   boot_command = [
     # stop the GRUB autoboot timer
