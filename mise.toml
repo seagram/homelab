@@ -6,3 +6,27 @@ packer = "latest"
 "pipx:ansible" = "latest"
 talosctl = "latest"
 terraform = "latest"
+
+[env]
+_.file = "ansible/.env"
+
+[tasks.check-dependencies]
+run = "./scripts/check-dependencies.sh"
+
+[tasks.create-proxmox-usb]
+run = "./scripts/create-proxmox-usb.sh"
+
+[tasks.configure-proxmox-installation]
+run = "cd ansible && ansible-playbook site.yml"
+
+[tasks.configure-tailnet-for-k8s]
+run = "cd terraform && terraform init && terraform apply -target=module.tailscale -auto-approve"
+
+[tasks.deploy-proxmox-vms]
+run = "cd terraform && terraform apply -target=module.proxmox -auto-approve"
+
+[tasks.bootstrap-talos-linux-nodes]
+run = "cd terraform && terraform apply -target=module.talos -auto-approve"
+
+[tasks.deploy-k8s-services]
+run = "cd kubernetes && helmfile apply"
