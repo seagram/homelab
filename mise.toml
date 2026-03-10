@@ -10,9 +10,6 @@ terraform = "latest"
 [env]
 _.file = "ansible/.env"
 
-[tasks.check-dependencies]
-run = "./scripts/check-dependencies.sh"
-
 [tasks.create-proxmox-usb]
 run = "./scripts/create-proxmox-usb.sh"
 
