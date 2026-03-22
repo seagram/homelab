@@ -14,7 +14,7 @@ A homelab for self-hosting open source software.
 
 ### Hypervisor
 
-Proxmox VE 8.4
+Proxmox VE 9.1.6
 
 ### Virtual machines
 
