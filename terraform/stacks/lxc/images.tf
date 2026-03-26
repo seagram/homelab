@@ -9,6 +9,9 @@ locals {
     prometheus = {
       ref = "docker.io/prom/prometheus:latest"
     }
+    traefik = {
+      ref = "docker.io/library/traefik:latest"
+    }
   }
 }
 
