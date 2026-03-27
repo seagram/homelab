@@ -1,9 +1,0 @@
----
-- name: Set NixOS version
-  ansible.builtin.set_fact:
-    nixos_version: "25.11"
-
-- name: Download NixOS ISO
-  ansible.builtin.get_url:
-    url: https://channels.nixos.org/nixos-{{ nixos_version }}/latest-nixos-minimal-x86_64-linux.iso
-    dest: /var/lib/vz/template/iso/nixos-{{ nixos_version }}-minimal-x86_64.iso

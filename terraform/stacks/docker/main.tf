@@ -1,3 +1,28 @@
+locals {
+  linux_images = {
+    debian = {
+      version = "13"
+      url     = "https://cloud.debian.org/images/cloud/trixie/latest/debian-13"
+    }
+    nixos = {
+      version = "25.11"
+      url     = "https://channels.nixos.org/nixos-25.11/latest-nixos-minimal-x86_64-linux.iso"
+    }
+    ubuntu = {
+      version = "24.04.4"
+      url     = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
+    }
+  }
+  selected_image = local.linux_images[var.image_name]
+}
+
+resource "proxmox_virtual_environment_download_file" "linux_image" {
+  content_type = "iso"
+  datastore_id = "local"
+  node_name    = "pve"
+  url          = local.selected_image.url
+}
+
 resource "proxmox_virtual_environment_vm" "this" {
   name      = "docker-vm"
   vm_id     = 101
@@ -33,7 +58,7 @@ resource "proxmox_virtual_environment_vm" "this" {
 
   disk {
     datastore_id = "local-lvm"
-    file_id      = "local:iso/debian-13-nocloud-amd64.img"
+    file_id      = proxmox_virtual_environment_download_file.linux_image.id
     interface    = "virtio0"
     iothread     = true
     discard      = "on"
