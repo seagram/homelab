@@ -86,7 +86,7 @@ resource "proxmox_virtual_environment_vm" "virtual_machines" {
   vm_id     = each.value.vm_id
   name      = each.value.name
   tags      = ["terraform"]
-  node_name = "proxmox"
+  node_name = "pve"
   on_boot   = true
 
   cpu {

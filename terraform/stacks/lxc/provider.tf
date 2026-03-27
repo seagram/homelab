@@ -9,7 +9,7 @@ terraform {
 }
 
 provider "proxmox" {
-  endpoint  = "https://proxmox.javanese-octatonic.ts.net:8006/api2/json"
+  endpoint  = "https://pve.javanese-octatonic.ts.net:8006/api2/json"
   api_token = var.proxmox_api_token
   insecure  = true
 
@@ -17,7 +17,7 @@ provider "proxmox" {
     agent    = true
     username = "root"
     node {
-      name    = "proxmox"
+      name    = "pve"
       address = "100.85.178.8"
     }
   }
