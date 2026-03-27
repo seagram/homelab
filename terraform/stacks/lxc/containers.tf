@@ -58,6 +58,11 @@ locals {
   }
 }
 
+resource "random_password" "postgres" {
+  length  = 32
+  special = false
+}
+
 resource "proxmox_virtual_environment_oci_image" "images" {
   for_each     = local.containers
   node_name    = "pve"
@@ -105,4 +110,8 @@ resource "proxmox_virtual_environment_container" "containers" {
     template_file_id = proxmox_virtual_environment_oci_image.images[each.key].id
     type             = "unmanaged"
   }
+
+  environment_variables = each.key == "postgres" ? {
+    POSTGRES_PASSWORD = random_password.postgres.result
+  } : {}
 }
