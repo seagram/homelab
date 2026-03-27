@@ -68,13 +68,19 @@ resource "proxmox_virtual_environment_oci_image" "images" {
 resource "proxmox_virtual_environment_container" "containers" {
   for_each = local.containers
 
-  node_name   = "pve"
-  vm_id       = 101 + index(keys(local.containers), each.key) # auto-increment vm id
-  description = "managed by terraform"
-  started     = true
+  node_name    = "pve"
+  vm_id        = 101 + index(keys(local.containers), each.key) # auto-increment vm id
+  description  = "managed by terraform"
+  unprivileged = true
+  started      = true
+  start_on_boot = true
 
   cpu {
     cores = 1
+  }
+
+  features {
+    nesting = true
   }
 
   memory {
