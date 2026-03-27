@@ -3,7 +3,11 @@ terraform {
   required_providers {
     proxmox = {
       source  = "bpg/proxmox"
-      version = "0.85.0"
+      version = "0.99.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "3.7.2"
     }
   }
 }
@@ -18,7 +22,7 @@ provider "proxmox" {
     username = "root"
     node {
       name    = "pve"
-      address = "100.85.178.8"
+      address = "100.122.158.128"
     }
   }
 }
