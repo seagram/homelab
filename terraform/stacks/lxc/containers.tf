@@ -75,6 +75,10 @@ resource "proxmox_virtual_environment_container" "containers" {
   started      = true
   start_on_boot = true
 
+  initialization {
+    hostname = each.key
+  }
+
   cpu {
     cores = 1
   }
