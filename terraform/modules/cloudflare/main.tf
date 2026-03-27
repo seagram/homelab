@@ -12,7 +12,7 @@ terraform {
 }
 
 locals {
-  direct_cnames  = toset(["proxmox"])
+  direct_cnames  = toset(["pve"])
   traefik_cnames = toset(["rss"])
 }
 

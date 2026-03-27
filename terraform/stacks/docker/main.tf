@@ -27,7 +27,7 @@ resource "proxmox_virtual_environment_vm" "this" {
   name      = "docker-vm"
   vm_id     = 101
   tags      = ["terraform"]
-  node_name = "proxmox"
+  node_name = "pve"
   on_boot   = true
 
   cpu {
