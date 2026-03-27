@@ -28,7 +28,7 @@ locals {
     forgejo = {
       memory = 1024
       disk   = 20
-      ref    = "codeberg.org/forgejo/forgejo:latest"
+      ref    = "codeberg.org/forgejo/forgejo:14.0.3"
     }
     dokploy = {
       memory = 768
@@ -93,5 +93,6 @@ resource "proxmox_virtual_environment_container" "containers" {
 
   operating_system {
     template_file_id = proxmox_virtual_environment_oci_image.images[each.key].id
+    type             = "unmanaged"
   }
 }
