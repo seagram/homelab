@@ -12,3 +12,8 @@ variable "proxmox_api_token" {
   type      = string
   sensitive = true
 }
+
+variable "image_name" {
+  type    = string
+  default = "debian"
+}
