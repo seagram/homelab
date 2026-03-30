@@ -1,0 +1,12 @@
+# tailscale
+tailscale_api_token = ""
+
+# cloudflare
+cloudflare_api_token = "" # required permissions: Zone:DNS:Edit
+cloudflare_zone_id   = ""
+
+# proxmox
+proxmox_api_token = ""
+
+# kubernetes
+admin_password = ""
