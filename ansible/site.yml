@@ -1,6 +1,6 @@
 ---
 - name: Configure Proxmox
-  hosts: proxmox-ssh
+  hosts: proxmox
   become: true
   tasks:
     # Note: ensure to run PVE post-install script before playbook.
@@ -13,7 +13,7 @@
       tags: tailscale
     - import_tasks: proxmox/tasks/ssh_security.yml
       tags: ssh
-    - import_tasks: proxmox/tasks/install_caddy.yml
-      tags: caddy
+    - import_tasks: proxmox/tasks/install_nginx.yml
+      tags: nginx
     - import_tasks: proxmox/tasks/disable_poweroff.yml
       tags: poweroff
