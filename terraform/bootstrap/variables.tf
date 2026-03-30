@@ -10,5 +10,4 @@ variable "cloudflare_api_token" {
 
 variable "cloudflare_account_id" {
   type = string
-  sensitive = true
 }

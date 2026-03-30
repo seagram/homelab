@@ -3,10 +3,9 @@ output "r2_bucket_name" {
 }
 
 output "r2_account_id" {
-  value       = var.cloudflare_account_id
-  sensitive   = true
+  value = var.cloudflare_account_id
 }
 
 output "r2_s3_endpoint" {
-  value       = "https://${var.cloudflare_account_id}.r2.cloudflarestorage.com"
+  value = "https://${var.cloudflare_account_id}.r2.cloudflarestorage.com"
 }
