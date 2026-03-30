@@ -1,9 +1,9 @@
 [tools]
+ansible-core = "latest"
 helm = "latest"
 helmfile = "latest"
 kubectl = "latest"
 packer = "latest"
-"pipx:ansible" = "latest"
 talosctl = "latest"
 terraform = "latest"
 
