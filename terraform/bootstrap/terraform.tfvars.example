@@ -1,3 +1,4 @@
 do_token=
-cloudflare_api_token=
+
+cloudflare_api_token= # required permissions: account -> workers R2 storage:edit
 cloudflare_account_id=
