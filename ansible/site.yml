@@ -8,9 +8,18 @@
     # Note: ensure to run PVE CPU Scaling Governor script (set to 'powersave') before playbook.
     # Source: https://community-scripts.github.io/ProxmoxVE/scripts?id=scaling-governor
     - import_tasks: tasks/apt_update.yml
+      tags: apt
     - import_tasks: tasks/install_tailscale.yml
+      tags: tailscale
     - import_tasks: tasks/ssh_security.yml
+      tags: ssh
+    - import_tasks: tasks/install_caddy.yml
+      tags: caddy
     - import_tasks: tasks/disable_poweroff.yml
+      tags: poweroff
     - import_tasks: tasks/download_talos_image.yml
+      tags: talos
     - import_tasks: tasks/download_nixox_image.yml
+      tags: nixos
     - import_tasks: tasks/download_ubuntu_image.yml
+      tags: ubuntu
