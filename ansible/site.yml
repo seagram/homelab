@@ -1,16 +1,21 @@
 ---
-- name: Configure Proxmox
-  hosts: proxmox
+- name: Install Tailscale
+  hosts: proxmox-ssh
   become: true
   tasks:
     # Note: ensure to run PVE post-install script before playbook.
     # Source: https://community-scripts.github.io/ProxmoxVE/scripts?id=post-pve-install
     # Note: ensure to run PVE CPU Scaling Governor script (set to 'powersave') before playbook.
     # Source: https://community-scripts.github.io/ProxmoxVE/scripts?id=scaling-governor
-    - import_tasks: proxmox/tasks/apt_update.yml
-      tags: apt
     - import_tasks: proxmox/tasks/install_tailscale.yml
       tags: tailscale
+
+- name: Configure Proxmox
+  hosts: proxmox-tailscale
+  become: true
+  tasks:
+    - import_tasks: proxmox/tasks/apt_update.yml
+      tags: apt
     - import_tasks: proxmox/tasks/ssh_security.yml
       tags: ssh
     - import_tasks: proxmox/tasks/install_nginx.yml
