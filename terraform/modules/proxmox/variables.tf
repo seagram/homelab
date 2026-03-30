@@ -19,15 +19,7 @@ variable "worker_node_2_ip" {
   type = string
 }
 
-variable "nixos_vm_ip" {
-  type = string
-}
-
 variable "talos_version" {
-  type = string
-}
-
-variable "nixos_version" {
   type = string
 }
 
