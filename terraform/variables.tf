@@ -36,11 +36,6 @@ variable "worker_node_2_ip" {
   default = "192.168.2.22"
 }
 
-variable "nixos_vm_ip" {
-  type    = string
-  default = "192.168.2.23"
-}
-
 #############################
 #         tailscale         #
 #############################
@@ -104,13 +99,4 @@ variable "kubeconfig_path" {
 variable "talosconfig_path" {
   type    = string
   default = "~/.config/talos/config"
-}
-
-#############################
-#           nixos           #
-#############################
-
-variable "nixos_version" {
-  type    = string
-  default = "25.11"
 }

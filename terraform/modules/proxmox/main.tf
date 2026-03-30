@@ -43,16 +43,6 @@ locals {
       iso           = "talos-${var.talos_version}-nocloud-amd64"
       agent_enabled = true
     }
-    # nixos = {
-    #   vm_id         = 104
-    #   name          = "nixos"
-    #   ip_address    = "${var.nixos_vm_ip}"
-    #   memory        = 1024
-    #   cores         = 1
-    #   disk_size     = 20
-    #   iso           = "nixos-${var.nixos_version}-minimal-x86_64"
-    #   agent_enabled = false
-    # }
   }
 }
 
