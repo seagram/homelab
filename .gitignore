@@ -16,3 +16,4 @@ svg/
 *.md
 !README.md
 .wrangler/
+**/backend.hcl

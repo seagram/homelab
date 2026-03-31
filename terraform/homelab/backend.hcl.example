@@ -1,0 +1,21 @@
+bucket = "homelab-terraform-state-bucket"
+key    = "homelab/terraform.tfstate"
+region = "us-east-1" # dummy value as R2 doesn't use AWS regions but terraform's S3 backend requires one
+
+endpoints = {
+  s3 = "https://<cloudflare_account_id>.r2.cloudflarestorage.com"
+}
+
+# R2 api token credentials
+# required permissions: object read & write
+# tip: - select "apply to specific buckets only" 
+#      - choose the bucket created from `bootstrap/`
+access_key = "<r2_access_key_id>"
+secret_key = "<r2_secret_access_key>"
+
+# required for S3-compatible backends that aren't AWS
+# disables AWS-specific validation (STS, regions) which R2 doesn't support
+skip_region_validation      = true
+skip_credentials_validation = true
+skip_requesting_account_id  = true
+use_path_style              = true
