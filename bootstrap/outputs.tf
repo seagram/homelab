@@ -1,11 +1,11 @@
-output "r2_bucket_name" {
-  value       = cloudflare_r2_bucket.terraform_state.name
+output "s3_bucket_name" {
+  value = aws_s3_bucket.terraform_state.id
 }
 
-output "r2_account_id" {
-  value = var.cloudflare_account_id
+output "s3_bucket_region" {
+  value = aws_s3_bucket.terraform_state.region
 }
 
-output "r2_s3_endpoint" {
-  value = "https://${var.cloudflare_account_id}.r2.cloudflarestorage.com"
+output "s3_bucket_arn" {
+  value = aws_s3_bucket.terraform_state.arn
 }
