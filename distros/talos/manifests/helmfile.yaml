@@ -17,7 +17,7 @@ releases:
     createNamespace: true
     wait: true
     values:
-      - tailscale/values.yaml
+      - tailscale/values.yaml.gotmpl
 
   - name: longhorn
     namespace: longhorn-system
