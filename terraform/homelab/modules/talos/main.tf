@@ -10,6 +10,9 @@ terraform {
     local = {
       source = "hashicorp/local"
     }
+    time = {
+      source = "hashicorp/time"
+    }
   }
 }
 
@@ -78,8 +81,13 @@ resource "talos_machine_configuration_apply" "this" {
   ]
 }
 
+resource "time_sleep" "wait_for_ntp" {
+  depends_on      = [talos_machine_configuration_apply.this]
+  create_duration = "30s"
+}
+
 resource "talos_machine_bootstrap" "this" {
-  depends_on           = [talos_machine_configuration_apply.this]
+  depends_on           = [time_sleep.wait_for_ntp]
   client_configuration = data.talos_client_configuration.this.client_configuration
   node                 = var.control_plane_ip
   timeouts = {
