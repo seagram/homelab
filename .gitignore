@@ -1,4 +1,4 @@
-ansible/.env
+**/.env
 .DS_Store
 **/.terraform/
 **/*.tfstate
