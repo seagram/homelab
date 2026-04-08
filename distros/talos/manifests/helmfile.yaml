@@ -105,6 +105,16 @@ releases:
         showlogs: true
         command: "kubectl"
         args: ["apply", "-f", "grafana/postgres-cluster.yaml"]
+      - events: ["presync"]
+        showlogs: true
+        command: "kubectl"
+        args:
+          - "wait"
+          - "--for=condition=Ready"
+          - "cluster/grafana-postgres"
+          - "-n"
+          - "grafana"
+          - "--timeout=5m"
       - events: ["postsync"]
         showlogs: true
         command: "kubectl"
