@@ -1,3 +1,21 @@
+# single ingress for the whole cluster. exposed to the tailnet by the
+# tailscale operator (see service.annotations below) so it shows up as
+# `traefik.<tailnet>.ts.net` and gets a 100.x address. cloudflare cnames
+# *.seagram.cloud at that hostname. public dns, but only tailnet devices
+# can actually route to it. no public exposure, no funnel.
+#
+# tls: traefik talks acme dns-01 to letsencrypt via the cloudflare api
+# (CF_DNS_API_TOKEN below). dns-01 is the only option here. http-01
+# needs inbound :80 from the internet, which we don't have, and wildcards
+# require dns-01 anyway. one wildcard cert for *.seagram.cloud is issued
+# once and served as the default for every host (see tlsStore at the
+# bottom), so individual ingresses don't need their own tls blocks.
+#
+# the issued cert + account key live in /data/acme.json on a longhorn
+# pvc. losing that file means re-issuing from scratch and eventually
+# tripping letsencrypt's rate limits, hence the persistence. acme.json is
+# single-writer, hence replicas: 1.
+
 deployment:
   replicas: 1  # acme storage is single-writer
 
