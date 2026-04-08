@@ -8,6 +8,12 @@ module "cloudflare" {
   tailscale_magic_dns_domain = var.tailscale_magic_dns_domain
 }
 
+module "cloudflare_services" {
+  source                     = "./cloudflare"
+  cloudflare_zone_id         = var.cloudflare_zone_id
+  tailscale_magic_dns_domain = var.tailscale_magic_dns_domain
+}
+
 module "proxmox" {
   depends_on            = [module.tailscale]
   source                = "./proxmox"
