@@ -1,16 +1,16 @@
 module "tailscale" {
-  source = "./modules/tailscale"
+  source = "./tailscale"
 }
 
 module "cloudflare" {
-  source                     = "./modules/cloudflare"
+  source                     = "../../../core/terraform/cloudflare"
   cloudflare_zone_id         = var.cloudflare_zone_id
   tailscale_magic_dns_domain = var.tailscale_magic_dns_domain
 }
 
 module "proxmox" {
   depends_on            = [module.tailscale]
-  source                = "./modules/proxmox"
+  source                = "./proxmox"
   default_gateway       = var.default_gateway
   control_plane_ip      = var.control_plane_ip
   worker_node_1_ip      = var.worker_node_1_ip
@@ -21,7 +21,7 @@ module "proxmox" {
 
 module "talos" {
   depends_on            = [module.proxmox]
-  source                = "./modules/talos"
+  source                = "./talos"
   default_gateway       = var.default_gateway
   control_plane_ip      = var.control_plane_ip
   worker_node_1_ip      = var.worker_node_1_ip

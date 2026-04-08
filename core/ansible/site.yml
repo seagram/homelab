@@ -7,18 +7,18 @@
     # Source: https://community-scripts.github.io/ProxmoxVE/scripts?id=post-pve-install
     # Note: ensure to run PVE CPU Scaling Governor script (set to 'powersave') before playbook.
     # Source: https://community-scripts.github.io/ProxmoxVE/scripts?id=scaling-governor
-    - import_tasks: proxmox/tasks/install_tailscale.yml
+    - import_tasks: tasks/install_tailscale.yml
       tags: tailscale
 
 - name: Configure Proxmox
   hosts: proxmox-tailscale
   become: true
   tasks:
-    - import_tasks: proxmox/tasks/apt_update.yml
+    - import_tasks: tasks/apt_update.yml
       tags: apt
-    - import_tasks: proxmox/tasks/ssh_security.yml
+    - import_tasks: tasks/harden_ssh.yml
       tags: ssh
-    - import_tasks: proxmox/tasks/install_nginx.yml
+    - import_tasks: tasks/install_nginx.yml
       tags: nginx
-    - import_tasks: proxmox/tasks/disable_poweroff.yml
+    - import_tasks: tasks/disable_poweroff.yml
       tags: poweroff
