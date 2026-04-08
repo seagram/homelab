@@ -9,6 +9,8 @@ repositories:
     url: https://cloudnative-pg.github.io/charts
   - name: grafana
     url: https://grafana.github.io/helm-charts
+  - name: traefik
+    url: https://traefik.github.io/charts
 
 releases:
   - name: tailscale-operator
@@ -37,6 +39,32 @@ releases:
         args: ["apply", "-f", "longhorn/ingress.yaml"]
     values:
       - longhorn/values.yaml
+
+  - name: traefik
+    namespace: traefik
+    chart: traefik/traefik
+    createNamespace: false
+    wait: true
+    needs:
+      - tailscale-operator
+      - longhorn
+    hooks:
+      - events: ["presync"]
+        showlogs: true
+        command: "kubectl"
+        args: ["apply", "-f", "traefik/namespace.yaml"]
+      - events: ["presync"]
+        showlogs: true
+        command: "sh"
+        args:
+          - "-c"
+          - |
+            kubectl create secret generic cloudflare-api-token \
+              -n traefik \
+              --from-literal=api-token="$CLOUDFLARE_API_TOKEN" \
+              --dry-run=client -o yaml | kubectl apply -f -
+    values:
+      - traefik/values.yaml
 
   - name: prometheus
     namespace: prometheus

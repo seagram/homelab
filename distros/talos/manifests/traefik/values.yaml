@@ -1,0 +1,55 @@
+deployment:
+  replicas: 1  # acme storage is single-writer
+
+service:
+  type: ClusterIP
+  annotations:
+    tailscale.com/expose: "true"
+    tailscale.com/hostname: traefik
+
+ingressClass:
+  enabled: true
+  isDefaultClass: true
+
+ports:
+  web:
+    redirections:
+      entryPoint:
+        to: websecure
+        scheme: https
+        permanent: true
+  websecure:
+    tls:
+      enabled: true
+
+persistence:
+  enabled: true
+  size: 128Mi
+  storageClass: longhorn
+  path: /data
+
+env:
+  - name: CF_DNS_API_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: cloudflare-api-token
+        key: api-token
+
+certResolvers:
+  letsencrypt:
+    email: acme@seagram.cloud
+    dnsChallenge:
+      provider: cloudflare
+      resolvers:
+        - 1.1.1.1:53
+        - 1.0.0.1:53
+    storage: /data/acme.json
+
+tlsStore:
+  default:
+    defaultGeneratedCert:
+      resolver: letsencrypt
+      domain:
+        main: seagram.cloud
+        sans:
+          - "*.seagram.cloud"
