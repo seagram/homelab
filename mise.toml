@@ -10,6 +10,10 @@ terraform = "latest"
 [env]
 _.file = "core/ansible/.env"
 
+[tasks.bootstrap]
+run = "cd bootstrap && terraform init && terraform apply -auto-approve"
+description = "Bootstrap S3 backend for terraform state"
+
 [tasks.create-proxmox-usb]
 run = "./scripts/create-proxmox-usb.sh"
 
