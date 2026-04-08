@@ -2,14 +2,14 @@ server:
   persistentVolume:
     enabled: true
     size: 8Gi
-    storageClass: longhorn-static
+    storageClass: longhorn
   global:
     scrape_interval: 30s
 
 alertmanager:
   persistence:
     enabled: true
-    storageClass: longhorn-static
+    storageClass: longhorn
 
 kubeStateMetrics:
   enabled: true
