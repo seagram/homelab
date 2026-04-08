@@ -3,13 +3,19 @@ kind: Ingress
 metadata:
   name: loki-ingress
   namespace: loki
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
-  ingressClassName: tailscale
-  defaultBackend:
-    service:
-      name: loki
-      port:
-        number: 3100
-  tls:
-    - hosts:
-        - loki
+  ingressClassName: traefik
+  rules:
+    - host: loki.seagram.cloud
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: loki
+                port:
+                  number: 3100

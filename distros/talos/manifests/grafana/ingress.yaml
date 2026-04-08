@@ -3,13 +3,19 @@ kind: Ingress
 metadata:
   name: grafana-ingress
   namespace: grafana
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
-  ingressClassName: tailscale
-  defaultBackend:
-    service:
-      name: grafana
-      port:
-        number: 80
-  tls:
-    - hosts:
-        - grafana
+  ingressClassName: traefik
+  rules:
+    - host: grafana.seagram.cloud
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 80
