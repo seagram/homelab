@@ -1,0 +1,6 @@
+[tools]
+terraform = "latest"
+
+[tasks.bootstrap]
+run = "terraform init && terraform apply -auto-approve"
+description = "Bootstrap S3 backend for terraform state"
