@@ -1,0 +1,45 @@
+[env]
+_.file = ".env"
+
+# ansible
+PROXMOX_IP = { required = "Proxmox host IP address" }
+PROXMOX_DOMAIN = { required = "FQDN for proxmox (e.g. pve.example.com)" }
+PROXMOX_SUBDOMAIN = { required = "Subdomain for proxmox DNS record (e.g. pve)" }
+ADMIN_PASSWORD = { required = true, redact = true }
+TAILSCALE_AUTH_KEY = { required = true, redact = true }
+CLOUDFLARE_API_TOKEN = { required = "Zone:DNS:Edit permissions needed", redact = true }
+CERTBOT_EMAIL = { required = "Email for Let's Encrypt registration" }
+
+# terraform
+# note 'TF_VAR_' prefix auto-maps to terraform variables
+TF_VAR_proxmox_subdomain = "{{env.PROXMOX_SUBDOMAIN}}"
+TF_VAR_cloudflare_zone_id = { required = true, redact = true }
+TF_VAR_tailscale_magic_dns_domain = { required = true, redact = true }
+
+[tasks.install-tailscale]
+run = "cd ansible && ansible-playbook site.yml --tags tailscale"
+description = "Install tailscale on proxmox host using SSH"
+
+[tasks.apt-update]
+run = "cd ansible && ansible-playbook site.yml --tags apt"
+description = "Update apt packages"
+
+[tasks.harden-ssh]
+run = "cd ansible && ansible-playbook site.yml --tags ssh"
+description = "Harden SSH authentication"
+
+[tasks.install-nginx]
+run = "cd ansible && ansible-playbook site.yml --tags nginx"
+description = "Install and configure nginx"
+
+[tasks.disable-poweroff]
+run = "cd ansible && ansible-playbook site.yml --tags poweroff"
+description = "For laptops: disable power off on lid close"
+
+[tasks.configure-proxmox]
+depends = ["apt-update", "harden-ssh", "install-nginx", "disable-poweroff"]
+description = "Run all proxmox configuration tasks"
+
+[tasks.deploy-dns]
+run = "cd terraform/cloudflare && terraform init && terraform apply"
+description = "Deploy cloudflare DNS records"

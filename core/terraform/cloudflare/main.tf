@@ -8,7 +8,7 @@ terraform {
 }
 
 locals {
-  direct_cnames = toset(["pve"])
+  direct_cnames = toset([var.proxmox_subdomain])
 }
 
 resource "cloudflare_dns_record" "direct_cname" {

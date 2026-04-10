@@ -1,3 +1,7 @@
+variable "proxmox_subdomain" {
+  type = string
+}
+
 variable "cloudflare_zone_id" {
   type      = string
   sensitive = true
