@@ -68,13 +68,16 @@
     state: directory
     mode: "0755"
 
-- name: Ensure nginx starts after Tailscale
+- name: Ensure nginx starts after Tailscale IP is ready
   ansible.builtin.copy:
     dest: /etc/systemd/system/nginx.service.d/after-tailscale.conf
     content: |
       [Unit]
-      After=tailscaled.service
-      Wants=tailscaled.service
+      After=tailscaled.service network-online.target
+      Wants=tailscaled.service network-online.target
+
+      [Service]
+      ExecStartPre=/bin/sh -c 'for i in $(seq 1 30); do tailscale ip -4 >/dev/null 2>&1 && exit 0; sleep 1; done; exit 1'
     mode: "0644"
   register: nginx_override
 
