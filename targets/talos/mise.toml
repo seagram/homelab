@@ -1,0 +1,18 @@
+[tools]
+helm = "latest"
+helmfile = "latest"
+kubectl = "latest"
+talosctl = "latest"
+terraform = "latest"
+
+[tasks.configure-tailnet]
+run = "cd terraform && terraform init && terraform apply -target=module.tailscale -auto-approve"
+description = "Configure tailnet for k8s"
+
+[tasks.deploy-vms]
+run = "cd terraform && terraform apply -target=module.proxmox -auto-approve"
+description = "Deploy proxmox VMs"
+
+[tasks.bootstrap-nodes]
+run = "cd terraform && terraform apply -target=module.talos -auto-approve"
+description = "Bootstrap Talos Linux nodes"

@@ -1,16 +1,8 @@
 [tools]
-helm = "latest"
-helmfile = "latest"
 hugo = "latest"
-kubectl = "latest"
-packer = "latest"
-talosctl = "latest"
 
 [tasks.create-proxmox-usb]
 run = "./scripts/create-proxmox-usb.sh"
-
-[tasks.configure-tailnet-for-k8s]
-run = "cd distros/talos/terraform && terraform init && terraform apply -target=module.tailscale -auto-approve"
 
 [tasks.deploy-proxmox-vms]
 run = "cd distros/talos/terraform && terraform apply -target=module.proxmox -auto-approve"
