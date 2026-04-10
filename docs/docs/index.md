@@ -4,25 +4,24 @@
 A homelab for self-hosting open source software.
 
 ## Applications
-### Monitoring
+
+### Shared (across `targets/`)
 - Grafana
 - Loki
 - Prometheus
 - Uptime Kuma
-- Portainer
+- Forgejo
+- n8n
+- Glance
+- NanoClaw
+
+### Proxmox LXCs
+- Caddy
 - Dockge
 
-### Proxy
+### Ubuntu VMs w/ `k3s`
 - Traefik
-- NGINX Proxy Manager
-- Caddy
-
-### General
-- Homepage
-- n8n
-- Excalidraw
-- Forgejo
-- Glance
+- Portainer
 - File Browser
 - Dokploy
-- NanoClaw
+- Excalidraw

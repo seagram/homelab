@@ -1,0 +1,4 @@
+proxmox_api_token    = "user@pam!token-name=ABCD1234" # format: <token-id>=<token-secret>
+proxmox_node_name    = "pve"
+proxmox_tailscale_ip = "100.x.x.x"
+tailnet_dns_name     = "your-tailnet-dns-name.ts.net"
