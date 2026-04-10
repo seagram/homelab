@@ -16,3 +16,5 @@ svg/
 !README.md
 .wrangler/
 **/backend.hcl
+.hugo_build.lock
+docs/public/

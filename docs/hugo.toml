@@ -1,0 +1,4 @@
+baseURL = 'https://seagram.github.io/homelab'
+locale = 'en-us'
+title = 'homelab docs'
+theme = 'hugo-dead-simple'
