@@ -4,6 +4,6 @@
 
 A homelab for self-hosting open source software.
 
-[Docs](https://callumairlie.github.io/homelab/)
-
 </div>
+
+[docs](https://seagram.github.io/homelab/)
