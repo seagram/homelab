@@ -2,6 +2,7 @@
 ansible-core = "latest"
 helm = "latest"
 helmfile = "latest"
+hugo = "latest"
 kubectl = "latest"
 packer = "latest"
 talosctl = "latest"
@@ -36,5 +37,5 @@ run = "cd distros/talos/terraform && terraform apply -target=module.talos -auto-
 run = "cd distros/talos/manifests && helmfile apply"
 
 [tasks.docs]
-run = "cd docs && uv run mkdocs serve --open"
+run = "cd docs && hugo server --buildDrafts"
 description = "Serve and open docs site"
