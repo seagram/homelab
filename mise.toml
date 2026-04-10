@@ -4,15 +4,6 @@ hugo = "latest"
 [tasks.create-proxmox-usb]
 run = "./scripts/create-proxmox-usb.sh"
 
-[tasks.deploy-proxmox-vms]
-run = "cd distros/talos/terraform && terraform apply -target=module.proxmox -auto-approve"
-
-[tasks.bootstrap-talos-linux-nodes]
-run = "cd distros/talos/terraform && terraform apply -target=module.talos -auto-approve"
-
-[tasks.deploy-k8s-services]
-run = "cd distros/talos/manifests && helmfile apply"
-
 [tasks.docs]
 run = "cd docs && hugo server --buildDrafts -O"
 description = "Serve and open docs site"
