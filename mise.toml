@@ -37,5 +37,5 @@ run = "cd distros/talos/terraform && terraform apply -target=module.talos -auto-
 run = "cd distros/talos/manifests && helmfile apply"
 
 [tasks.docs]
-run = "cd docs && hugo server --buildDrafts"
+run = "cd docs && hugo server --buildDrafts -O"
 description = "Serve and open docs site"
