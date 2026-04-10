@@ -62,6 +62,27 @@
     mode: "0644"
   register: nginx_config_updated
 
+- name: Create nginx override directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/nginx.service.d
+    state: directory
+    mode: "0755"
+
+- name: Ensure nginx starts after Tailscale
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/nginx.service.d/after-tailscale.conf
+    content: |
+      [Unit]
+      After=tailscaled.service
+      Wants=tailscaled.service
+    mode: "0644"
+  register: nginx_override
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when: nginx_override is changed
+
 - name: Enable site
   ansible.builtin.file:
     src: /etc/nginx/sites-available/pve.conf
