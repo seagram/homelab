@@ -1,6 +1,15 @@
 [tools]
+balena = "latest"
 terraform = "latest"
 
+[tasks.download-proxmox-iso]
+description = "Download Proxmox ISO"
+run = "curl -Lo proxmox.iso https://enterprise.proxmox.com/iso/proxmox-ve_9.1-1.iso"
+
+[tasks.flash-proxmox-usb]
+description = "Flash ISO to USB with balena"
+run = "sudo balena local flash proxmox.iso"
+
 [tasks.bootstrap]
-run = "terraform init && terraform apply -auto-approve"
 description = "Bootstrap S3 backend for terraform state"
+run = "terraform init && terraform apply -auto-approve"
