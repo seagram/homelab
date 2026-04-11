@@ -1,9 +1,6 @@
 [tools]
 hugo = "latest"
 
-[tasks.create-proxmox-usb]
-run = "./scripts/create-proxmox-usb.sh"
-
 [tasks.docs]
 run = "cd docs && hugo server --buildDrafts -O"
 description = "Serve and open docs site"
