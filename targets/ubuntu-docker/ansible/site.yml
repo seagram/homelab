@@ -1,0 +1,20 @@
+---
+- name: Bootstrap ubuntu
+  hosts: ubuntu
+  become: true
+  tasks:
+    - import_tasks: tasks/apt_update.yml
+      tags: apt
+    - import_tasks: tasks/install-tailscale.yml
+      tags: tailscale
+    - import_tasks: tasks/harden_ssh.yml
+      tags: ssh
+    - import_tasks: tasks/install-docker.yml
+      tags: docker
+
+- name: Deploy services
+  hosts: ubuntu-tailscale
+  become: true
+  tasks:
+    - import_tasks: tasks/docker-compose-up.yml
+      tags: services

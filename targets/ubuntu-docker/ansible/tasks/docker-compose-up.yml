@@ -1,0 +1,22 @@
+---
+- name: Sync services to server
+  ansible.posix.synchronize:
+    src: "{{ playbook_dir }}/../services/"
+    dest: /opt/services/
+    delete: yes
+    recursive: yes
+
+- name: Find service directories
+  ansible.builtin.find:
+    paths: /opt/services
+    file_type: directory
+    recurse: no
+  register: service_dirs
+
+- name: Start services
+  community.docker.docker_compose_v2:
+    project_src: "{{ item.path }}"
+    state: present
+  loop: "{{ service_dirs.files }}"
+  loop_control:
+    label: "{{ item.path | basename }}"

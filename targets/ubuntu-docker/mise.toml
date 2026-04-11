@@ -1,0 +1,14 @@
+[env]
+_.file = ".env"
+
+[tools]
+balena = "latest"
+ansible-core = "latest"
+
+[tasks.download-ubuntu-iso]
+description = "Download ubuntu 24.04 LTS ISO"
+run = "curl -Lo ubuntu.iso https://releases.ubuntu.com/24.04/ubuntu-24.04.4-live-server-amd64.iso"
+
+[tasks.flash-ubuntu-usb]
+description = "Flash ISO to USB with balena"
+run = "sudo balena local flash ubuntu.iso"

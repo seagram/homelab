@@ -19,3 +19,4 @@ svg/
 .hugo_build.lock
 docs/public/
 targets/proxmox-lxc/ansible/inventory/hosts.yml
+**/*.iso
