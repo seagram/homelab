@@ -1,0 +1,15 @@
+---
+- name: Create admin user
+  ansible.builtin.user:
+    name: admin
+    groups: sudo
+    shell: /bin/bash
+    create_home: true
+    state: present
+
+- name: Allow admin passwordless sudo
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers.d/admin
+    line: "admin ALL=(ALL) NOPASSWD:ALL"
+    create: true
+    mode: "0440"

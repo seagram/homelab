@@ -20,28 +20,18 @@ TF_VAR_proxmox_subdomain = "{{env.PROXMOX_SUBDOMAIN}}"
 TF_VAR_cloudflare_zone_id = { required = true, redact = true }
 TF_VAR_tailscale_magic_dns_domain = { required = true, redact = true }
 
-[tasks.install-tailscale]
-run = "cd ansible && ansible-playbook site.yml --tags tailscale"
-description = "Install tailscale on proxmox host using SSH"
-
-[tasks.apt-update]
-run = "cd ansible && ansible-playbook site.yml --tags apt"
-description = "Update apt packages"
-
-[tasks.harden-ssh]
-run = "cd ansible && ansible-playbook site.yml --tags ssh"
-description = "Harden SSH authentication"
-
-[tasks.install-nginx]
-run = "cd ansible && ansible-playbook site.yml --tags nginx"
-description = "Install and configure nginx"
-
-[tasks.disable-poweroff]
-run = "cd ansible && ansible-playbook site.yml --tags poweroff"
-description = "For laptops: disable power off on lid close"
+[tasks.bootstrap]
+run = """
+cd ansible && ansible-playbook site.yml \
+  --tags repos,admin,tailscale \
+  -e ansible_host=$PROXMOX_IP \
+  -e ansible_user=root \
+  -e ansible_ssh_pass=$ADMIN_PASSWORD
+"""
+description = "First-run bootstrap: create admin user and install tailscale via SSH"
 
 [tasks.configure-proxmox]
-depends = ["apt-update", "harden-ssh", "install-nginx", "disable-poweroff"]
+run = "cd ansible && ansible-playbook site.yml"
 description = "Run all proxmox configuration tasks"
 
 [tasks.deploy-dns]
