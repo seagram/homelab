@@ -1,4 +1,10 @@
 terraform {
+  backend "s3" {
+    bucket = "homelab-terraform-state-bucket"
+    key    = "core/terraform.tfstate"
+    region = "us-east-1"
+  }
+
   required_providers {
     cloudflare = {
       source  = "cloudflare/cloudflare"

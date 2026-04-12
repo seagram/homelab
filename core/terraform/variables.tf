@@ -8,6 +8,6 @@ variable "cloudflare_zone_id" {
 }
 
 variable "tailscale_magic_dns_domain" {
-  type = string
+  type      = string
   sensitive = true
 }
