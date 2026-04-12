@@ -1,6 +1,19 @@
 [tools]
+age = "latest"
 balena = "latest"
+sops = "latest"
 terraform = "latest"
+
+[tasks.generate-age-key]
+description = "Generate a local age private key for SOPS if one does not exist"
+run = """
+mkdir -p "$HOME/.config/mise"
+test -f "$HOME/.config/mise/age.txt" || age-keygen -o "$HOME/.config/mise/age.txt"
+"""
+
+[tasks.show-age-recipient]
+description = "Print the public age recipient for encrypting secrets"
+run = "age-keygen -y \"${MISE_SOPS_AGE_KEY_FILE:-${SOPS_AGE_KEY_FILE:-$HOME/.config/mise/age.txt}}\""
 
 [tasks.download-proxmox-iso]
 description = "Download Proxmox ISO"
@@ -12,4 +25,4 @@ run = "sudo balena local flash proxmox.iso"
 
 [tasks.bootstrap]
 description = "Bootstrap S3 backend for terraform state"
-run = "terraform init && terraform apply -auto-approve"
+run = "terraform -chdir=terraform init && terraform -chdir=terraform apply -auto-approve"
