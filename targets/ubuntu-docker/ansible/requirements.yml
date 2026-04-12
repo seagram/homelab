@@ -1,0 +1,9 @@
+---
+collections:
+  - name: ansible.posix
+  - name: community.docker
+  - name: community.general
+
+roles:
+  - name: artis3n.tailscale
+  - name: geerlingguy.docker

@@ -6,17 +6,19 @@
     delete: yes
     recursive: yes
 
-- name: Find service directories
+- name: Find compose projects
   ansible.builtin.find:
     paths: /opt/services
-    file_type: directory
-    recurse: no
-  register: service_dirs
+    patterns: docker-compose.yml
+    file_type: file
+    recurse: yes
+  register: compose_files
 
 - name: Start services
   community.docker.docker_compose_v2:
-    project_src: "{{ item.path }}"
+    project_src: "{{ item.path | dirname }}"
     state: present
-  loop: "{{ service_dirs.files }}"
+    remove_orphans: true
+  loop: "{{ compose_files.files | sort(attribute='path') }}"
   loop_control:
-    label: "{{ item.path | basename }}"
+    label: "{{ item.path | dirname | basename }}"

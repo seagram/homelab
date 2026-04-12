@@ -16,5 +16,9 @@
   hosts: ubuntu-tailscale
   become: true
   tasks:
+    - import_tasks: tasks/service-env-files.yml
+      tags: services
+    - import_tasks: tasks/docker-networks.yml
+      tags: services
     - import_tasks: tasks/docker-compose-up.yml
       tags: services
