@@ -1,5 +1,5 @@
 bucket = "homelab-terraform-state-bucket"
-key    = "homelab/terraform.tfstate"
+key    = "talos/terraform.tfstate"
 region = "us-east-1"
 
 # AWS credentials are read from environment variables:

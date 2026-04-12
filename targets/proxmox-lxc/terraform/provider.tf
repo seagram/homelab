@@ -1,5 +1,10 @@
 terraform {
-  backend "local" {}
+  backend "s3" {
+    bucket = "homelab-terraform-state-bucket"
+    key    = "proxmox-lxc/terraform.tfstate"
+    region = "us-east-1"
+  }
+
   required_providers {
     proxmox = {
       source  = "bpg/proxmox"
