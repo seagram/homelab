@@ -1,0 +1,29 @@
+name: portainer
+
+services:
+  portainer:
+    image: portainer/portainer-ce:lts
+    restart: unless-stopped
+    command:
+      - -H
+      - unix:///var/run/docker.sock
+    environment:
+      TZ: "${TZ:-Etc/UTC}"
+    networks:
+      - proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  proxy:
+    external: true
+    name: proxy
+
+volumes:
+  portainer_data:

@@ -1,0 +1,40 @@
+name: forgejo
+
+services:
+  forgejo:
+    image: codeberg.org/forgejo/forgejo:14-rootless
+    restart: unless-stopped
+    user: "1000:1000"
+    env_file:
+      - /etc/opt/services-env/forgejo.env
+    environment:
+      USER_UID: "1000"
+      USER_GID: "1000"
+      TZ: "${TZ:-Etc/UTC}"
+      FORGEJO__server__ROOT_URL: "${FORGEJO_ROOT_URL:-https://forgejo.example.com/}"
+      FORGEJO__server__DOMAIN: "${FORGEJO_DOMAIN:-forgejo.example.com}"
+      FORGEJO__server__SSH_DOMAIN: "${FORGEJO_SSH_DOMAIN:-forgejo.example.com}"
+      FORGEJO__server__SSH_PORT: "${FORGEJO_SSH_PORT:-222}"
+      FORGEJO__server__START_SSH_SERVER: "true"
+      FORGEJO__server__SSH_LISTEN_PORT: "2222"
+    ports:
+      - "${FORGEJO_SSH_PORT:-222}:2222"
+    networks:
+      - proxy
+    volumes:
+      - forgejo_data:/var/lib/gitea
+      - forgejo_config:/etc/gitea
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  proxy:
+    external: true
+    name: proxy
+
+volumes:
+  forgejo_data:
+  forgejo_config:

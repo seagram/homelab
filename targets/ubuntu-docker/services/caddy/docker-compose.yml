@@ -1,0 +1,36 @@
+name: caddy
+
+services:
+  caddy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - /etc/opt/services-env/caddy.env
+    environment:
+      TZ: "${TZ:-Etc/UTC}"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    networks:
+      - proxy
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  proxy:
+    external: true
+    name: proxy
+
+volumes:
+  caddy_data:
+  caddy_config:

@@ -1,15 +1,16 @@
-name: uptime-kuma
+name: dozzle
 
 services:
-  uptime-kuma:
-    image: louislam/uptime-kuma:1
+  dozzle:
+    image: amir20/dozzle:latest
     restart: unless-stopped
     environment:
+      DOZZLE_NO_ANALYTICS: "true"
       TZ: "${TZ:-Etc/UTC}"
     networks:
       - proxy
     volumes:
-      - uptime_kuma_data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     logging:
       driver: json-file
       options:
@@ -20,6 +21,3 @@ networks:
   proxy:
     external: true
     name: proxy
-
-volumes:
-  uptime_kuma_data:

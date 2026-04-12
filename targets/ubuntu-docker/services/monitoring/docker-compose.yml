@@ -1,0 +1,77 @@
+name: monitoring
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-lifecycle
+    networks:
+      - default
+      - observability
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  loki:
+    image: grafana/loki:latest
+    restart: unless-stopped
+    command:
+      - -config.file=/etc/loki/config.yml
+    networks:
+      - default
+      - observability
+    volumes:
+      - ./loki/config.yml:/etc/loki/config.yml:ro
+      - loki_data:/loki
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  grafana:
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    env_file:
+      - /etc/opt/services-env/monitoring.env
+    environment:
+      GF_SECURITY_ADMIN_USER: "${GRAFANA_ADMIN_USER:-admin}"
+      GF_SECURITY_ADMIN_PASSWORD: "${GRAFANA_ADMIN_PASSWORD:-change-me}"
+      GF_SERVER_ROOT_URL: "${GRAFANA_ROOT_URL:-https://grafana.example.com}"
+      TZ: "${TZ:-Etc/UTC}"
+    networks:
+      - default
+      - proxy
+      - observability
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+      - loki
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  proxy:
+    external: true
+    name: proxy
+  observability:
+    external: true
+    name: observability
+
+volumes:
+  prometheus_data:
+  loki_data:
+  grafana_data:

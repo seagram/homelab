@@ -1,0 +1,10 @@
+theme:
+  background-color: 240 8 10
+  primary-color: 24 94 62
+
+pages:
+  - name: Home
+    width: slim
+    columns:
+      - size: full
+        widgets: []
