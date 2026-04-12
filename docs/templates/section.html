@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block description %}{{ section.title }}{% endblock description %}
+{% block title %}{{ section.title }} | {{ config.title }}{% endblock title %}
+
+{% block content %}
+  <div class="page-content">
+    {{ section.content | safe }}
+
+    {% if section.pages | length > 0 %}
+      <ul class="section-page-list">
+        {% for page in section.pages %}
+          <li><a href="{{ page.permalink }}">{{ page.title }}</a></li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+{% endblock content %}

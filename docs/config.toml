@@ -1,0 +1,12 @@
+base_url = "https://seagram.github.io/homelab"
+title = "homelab docs"
+default_language = "en"
+build_search_index = false
+minify_html = true
+
+[extra]
+sections = [
+  { title = "bootstrap", path = "/bootstrap/", content = "@/bootstrap/_index.md" },
+  { title = "core", path = "/core/", content = "@/core/_index.md" },
+  { title = "targets", path = "/targets/", content = "@/targets/_index.md" },
+]

@@ -1,0 +1,188 @@
+:root {
+  --background: #ffffff;
+  --surface: #f7f7f5;
+  --text: #171717;
+  --text-dim: #57534e;
+  --border: #d6d3d1;
+  --link: #0f5cc0;
+  --code-background: #f1f5f9;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #111111;
+    --surface: #1c1c1c;
+    --text: #ececec;
+    --text-dim: #b8b8b8;
+    --border: #3a3a3a;
+    --link: #8ab4ff;
+    --code-background: #1f2937;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--background);
+  color: var(--text);
+}
+
+body {
+  margin: 0;
+  font-family:
+    "Georgia",
+    "Iowan Old Style",
+    "Palatino Linotype",
+    serif;
+  line-height: 1.6;
+  background: var(--background);
+  color: var(--text);
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.docs-layout {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+  display: flex;
+  gap: 2rem;
+}
+
+.sidebar {
+  width: 13rem;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  padding-right: 1rem;
+}
+
+.sidebar-sections {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar-section + .sidebar-section {
+  margin-top: 0.35rem;
+}
+
+.sidebar-section > a {
+  display: block;
+  padding: 0.2rem 0 0.2rem 0.65rem;
+  border-left: 2px solid transparent;
+  color: var(--text-dim);
+}
+
+.sidebar-section.active > a {
+  border-left-color: var(--link);
+  color: var(--text);
+}
+
+.docs-content {
+  min-width: 0;
+  flex: 1;
+}
+
+.page-content > :first-child {
+  margin-top: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.2;
+}
+
+h2,
+h3,
+h4 {
+  margin-top: 1.5em;
+}
+
+h2 {
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+blockquote {
+  margin: 1.25rem 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--border);
+  color: var(--text-dim);
+}
+
+pre,
+code {
+  font-family:
+    "SFMono-Regular",
+    "SF Mono",
+    "Menlo",
+    "Consolas",
+    monospace;
+}
+
+code {
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.25rem;
+  background: var(--code-background);
+}
+
+pre {
+  overflow-x: auto;
+  padding: 0.9rem 1rem;
+  border-radius: 0.4rem;
+  background: var(--code-background);
+}
+
+pre code {
+  padding: 0;
+  background: transparent;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+}
+
+th,
+td {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+th {
+  background: var(--surface);
+}
+
+.section-page-list {
+  padding-left: 1.2rem;
+}
+
+@media (max-width: 760px) {
+  .docs-layout {
+    flex-direction: column;
+    gap: 1rem;
+    padding-top: 1.25rem;
+  }
+
+  .sidebar {
+    width: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+    padding-right: 0;
+    padding-bottom: 1rem;
+  }
+}

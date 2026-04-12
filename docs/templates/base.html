@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="{% block description %}{{ config.title }}{% endblock description %}" />
+    <title>{% block title %}{{ config.title }}{% endblock title %}</title>
+    <link rel="stylesheet" href="{{ get_url(path='site.css') }}" />
+  </head>
+  <body>
+    {% set active_path = current_path | default(value="/") %}
+    <div class="docs-layout">
+      <aside class="sidebar">
+        <nav>
+          <ul class="sidebar-sections">
+            <li class="sidebar-section{% if active_path == '/' %} active{% endif %}">
+              <a href="{{ get_url(path='@/_index.md') }}">homelab</a>
+            </li>
+            {% for item in config.extra.sections %}
+              <li class="sidebar-section{% if active_path == item.path %} active{% endif %}">
+                <a href="{{ get_url(path=item.content) }}">{{ item.title }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        </nav>
+      </aside>
+      <main class="docs-content">
+        {% block content %}{% endblock content %}
+      </main>
+    </div>
+  </body>
+</html>

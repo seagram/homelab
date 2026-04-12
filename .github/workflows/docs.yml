@@ -3,7 +3,7 @@ name: Deploy docs
 on:
   push:
     branches: [main]
-    paths: [docs/**]
+    paths: [docs/**, .github/workflows/docs.yml]
   workflow_dispatch:
 
 permissions:
@@ -20,12 +20,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: taiki-e/install-action@v2
         with:
-          submodules: true
-      - uses: peaceiris/actions-hugo@v3
-        with:
-          hugo-version: latest
-      - run: hugo --minify --source docs
+          tool: zola
+      - run: zola build
+        working-directory: docs
       - uses: actions/upload-pages-artifact@v3
         with:
           path: docs/public
