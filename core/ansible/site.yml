@@ -2,13 +2,13 @@
 - name: Configure Proxmox
   hosts: proxmox
   become: true
+  vars:
+    cpu_scaling_governor: powersave # performance | powersave | schedutil
   tasks:
-    # Note: ensure to run PVE post-install script before playbook.
-    # Source: https://community-scripts.github.io/ProxmoxVE/scripts?id=post-pve-install
-    # Note: ensure to run PVE CPU Scaling Governor script (set to 'powersave') before playbook.
-    # Source: https://community-scripts.github.io/ProxmoxVE/scripts?id=scaling-governor
     - import_tasks: tasks/configure_repos.yml
       tags: repos
+    - import_tasks: tasks/set_cpu_scaling_governor.yml
+      tags: governor
     - import_tasks: tasks/create_admin_user.yml
       tags: admin
     - import_tasks: tasks/install_tailscale.yml

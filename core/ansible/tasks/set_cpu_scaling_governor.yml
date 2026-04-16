@@ -1,0 +1,54 @@
+---
+- name: Read available CPU scaling governors
+  ansible.builtin.slurp:
+    src: /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors
+  register: available_governors_raw
+
+- name: Assert requested governor is available
+  ansible.builtin.assert:
+    that:
+      - cpu_scaling_governor in (available_governors_raw.content | b64decode | trim | split(' '))
+    fail_msg: >-
+      Governor '{{ cpu_scaling_governor }}' is not available.
+      Available: {{ available_governors_raw.content | b64decode | trim }}
+
+- name: Install CPU scaling governor systemd unit
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/cpu-scaling-governor.service
+    mode: "0644"
+    content: |
+      [Unit]
+      Description=Set CPU scaling governor to {{ cpu_scaling_governor }}
+      After=sysinit.target
+      ConditionPathExists=/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+
+      [Service]
+      Type=oneshot
+      ExecStart=/bin/bash -c 'echo {{ cpu_scaling_governor }} | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor'
+      RemainAfterExit=yes
+
+      [Install]
+      WantedBy=multi-user.target
+  register: governor_unit
+
+- name: Enable CPU scaling governor service
+  ansible.builtin.systemd:
+    name: cpu-scaling-governor.service
+    enabled: true
+    state: started
+    daemon_reload: true
+
+- name: Re-apply CPU scaling governor when unit changed
+  ansible.builtin.systemd:
+    name: cpu-scaling-governor.service
+    state: restarted
+  when: governor_unit is changed
+
+- name: Read current CPU scaling governor
+  ansible.builtin.slurp:
+    src: /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+  register: current_governor
+
+- name: Show current CPU scaling governor
+  ansible.builtin.debug:
+    msg: "CPU scaling governor is set to {{ current_governor.content | b64decode | trim }}"
