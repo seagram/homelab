@@ -1,19 +1,17 @@
 [tools]
-age = "latest"
+awscli = "latest"
 balena = "latest"
-sops = "latest"
 terraform = "latest"
 
-[tasks.generate-age-key]
-description = "Generate a local age private key for SOPS if one does not exist"
-run = """
-mkdir -p "$HOME/.config/mise"
-test -f "$HOME/.config/mise/age.txt" || age-keygen -o "$HOME/.config/mise/age.txt"
-"""
-
-[tasks.show-age-recipient]
-description = "Print the public age recipient for encrypting secrets"
-run = "age-keygen -y \"${MISE_SOPS_AGE_KEY_FILE:-${SOPS_AGE_KEY_FILE:-$HOME/.config/mise/age.txt}}\""
+[tasks.check-aws-creds]
+hide = true
+run = '''
+aws sts get-caller-identity >/dev/null 2>&1 || {
+  echo "AWS credentials not found." 
+  echo "Run 'aws configure'"
+  exit 1
+}
+'''
 
 [tasks.download-proxmox-iso]
 description = "Download Proxmox ISO"
@@ -24,5 +22,6 @@ description = "Flash ISO to USB with balena"
 run = "sudo balena local flash proxmox.iso"
 
 [tasks.bootstrap]
-description = "Bootstrap S3 backend for terraform state"
+description = "Bootstrap AWS resources required for homelab"
+depends = ["check-aws-creds"]
 run = "terraform -chdir=terraform init && terraform -chdir=terraform apply -auto-approve"
