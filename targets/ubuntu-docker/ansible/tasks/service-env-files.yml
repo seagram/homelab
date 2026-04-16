@@ -13,13 +13,13 @@
       TZ={{ lookup('env', 'TZ') | default('America/Toronto', true) }}
       ACME_EMAIL={{ lookup('env', 'ACME_EMAIL') | default('admin@seagram.cloud', true) }}
       CLOUDFLARE_API_TOKEN={{ lookup('env', 'CLOUDFLARE_API_TOKEN') }}
-      GLANCE_HOSTNAME=glance.{{ lookup('env', 'BASE_DOMAIN') | default('seagram.cloud', true) }}
-      GRAFANA_HOSTNAME=grafana.{{ lookup('env', 'BASE_DOMAIN') | default('seagram.cloud', true) }}
-      FORGEJO_HOSTNAME=forgejo.{{ lookup('env', 'BASE_DOMAIN') | default('seagram.cloud', true) }}
-      N8N_HOSTNAME=n8n.{{ lookup('env', 'BASE_DOMAIN') | default('seagram.cloud', true) }}
-      UPTIME_KUMA_HOSTNAME=status.{{ lookup('env', 'BASE_DOMAIN') | default('seagram.cloud', true) }}
-      PORTAINER_HOSTNAME=portainer.{{ lookup('env', 'BASE_DOMAIN') | default('seagram.cloud', true) }}
-      DOZZLE_HOSTNAME=logs.{{ lookup('env', 'BASE_DOMAIN') | default('seagram.cloud', true) }}
+      GLANCE_HOSTNAME=glance.{{ lookup('env', 'ROOT_DOMAIN') | default('seagram.cloud', true) }}
+      GRAFANA_HOSTNAME=grafana.{{ lookup('env', 'ROOT_DOMAIN') | default('seagram.cloud', true) }}
+      FORGEJO_HOSTNAME=forgejo.{{ lookup('env', 'ROOT_DOMAIN') | default('seagram.cloud', true) }}
+      N8N_HOSTNAME=n8n.{{ lookup('env', 'ROOT_DOMAIN') | default('seagram.cloud', true) }}
+      UPTIME_KUMA_HOSTNAME=status.{{ lookup('env', 'ROOT_DOMAIN') | default('seagram.cloud', true) }}
+      PORTAINER_HOSTNAME=portainer.{{ lookup('env', 'ROOT_DOMAIN') | default('seagram.cloud', true) }}
+      DOZZLE_HOSTNAME=logs.{{ lookup('env', 'ROOT_DOMAIN') | default('seagram.cloud', true) }}
 
 - name: Deploy monitoring env file
   ansible.builtin.copy:
@@ -29,7 +29,7 @@
       TZ={{ lookup('env', 'TZ') | default('America/Toronto', true) }}
       GRAFANA_ADMIN_USER={{ lookup('env', 'GRAFANA_ADMIN_USER') | default('admin', true) }}
       GRAFANA_ADMIN_PASSWORD={{ lookup('env', 'GRAFANA_ADMIN_PASSWORD') | default('change-me', true) }}
-      GRAFANA_ROOT_URL=https://grafana.{{ lookup('env', 'BASE_DOMAIN') | default('seagram.cloud', true) }}
+      GRAFANA_ROOT_URL=https://grafana.{{ lookup('env', 'ROOT_DOMAIN') | default('seagram.cloud', true) }}
 
 - name: Deploy forgejo env file
   ansible.builtin.copy:
@@ -37,9 +37,9 @@
     mode: "0640"
     content: |
       TZ={{ lookup('env', 'TZ') | default('America/Toronto', true) }}
-      FORGEJO_ROOT_URL=https://forgejo.{{ lookup('env', 'BASE_DOMAIN') | default('seagram.cloud', true) }}/
-      FORGEJO_DOMAIN=forgejo.{{ lookup('env', 'BASE_DOMAIN') | default('seagram.cloud', true) }}
-      FORGEJO_SSH_DOMAIN=forgejo.{{ lookup('env', 'BASE_DOMAIN') | default('seagram.cloud', true) }}
+      FORGEJO_ROOT_URL=https://forgejo.{{ lookup('env', 'ROOT_DOMAIN') | default('seagram.cloud', true) }}/
+      FORGEJO_DOMAIN=forgejo.{{ lookup('env', 'ROOT_DOMAIN') | default('seagram.cloud', true) }}
+      FORGEJO_SSH_DOMAIN=forgejo.{{ lookup('env', 'ROOT_DOMAIN') | default('seagram.cloud', true) }}
       FORGEJO_SSH_PORT={{ lookup('env', 'FORGEJO_SSH_PORT') | default('222', true) }}
 
 - name: Deploy n8n env file
@@ -48,6 +48,6 @@
     mode: "0640"
     content: |
       TZ={{ lookup('env', 'TZ') | default('America/Toronto', true) }}
-      N8N_HOST=n8n.{{ lookup('env', 'BASE_DOMAIN') | default('seagram.cloud', true) }}
+      N8N_HOST=n8n.{{ lookup('env', 'ROOT_DOMAIN') | default('seagram.cloud', true) }}
       N8N_PROTOCOL=https
-      N8N_WEBHOOK_URL=https://n8n.{{ lookup('env', 'BASE_DOMAIN') | default('seagram.cloud', true) }}/
+      N8N_WEBHOOK_URL=https://n8n.{{ lookup('env', 'ROOT_DOMAIN') | default('seagram.cloud', true) }}/

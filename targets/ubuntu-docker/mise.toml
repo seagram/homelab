@@ -14,9 +14,9 @@ terraform = "latest"
 description = "Create an encrypted .secrets.yaml from .secrets.example.yaml"
 run = """
 test -f .secrets.yaml && { echo ".secrets.yaml already exists"; exit 0; }
-test -n "$SOPS_AGE_RECIPIENTS" || { echo "Set SOPS_AGE_RECIPIENTS in .env first"; exit 1; }
+test -f ../../.sops.yaml || { echo "Missing repo-root .sops.yaml; run 'mise run bootstrap' in ../../bootstrap first"; exit 1; }
 cp .secrets.example.yaml .secrets.yaml
-sops encrypt -i --age "$SOPS_AGE_RECIPIENTS" .secrets.yaml
+sops encrypt -i .secrets.yaml
 """
 
 [tasks.edit-secrets]
