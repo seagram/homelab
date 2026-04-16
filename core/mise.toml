@@ -1,6 +1,7 @@
 [tools]
 ansible-core = "latest"
 ansible-lint = "latest"
+awscli = "latest"
 sops = "latest"
 terraform = "latest"
 
@@ -12,56 +13,56 @@ _.file = [
 
 # non-secret config
 PROXMOX_IP = { required = "Proxmox host IP address" }
-PROXMOX_DOMAIN = { required = "FQDN for proxmox (e.g. pve.example.com)" }
-PROXMOX_SUBDOMAIN = { required = "Subdomain for proxmox DNS record (e.g. pve)" }
+PROXMOX_HOSTNAME = { required = "Short DNS label for Proxmox (e.g. pve)" }
+ROOT_DOMAIN = { required = "Root zone managed in Cloudflare (e.g. example.com)" }
+PROXMOX_FQDN = "{{env.PROXMOX_HOSTNAME}}.{{env.ROOT_DOMAIN}}"
 CERTBOT_EMAIL = { required = "Email for Let's Encrypt registration" }
 
 # terraform non-secret vars
-TF_VAR_proxmox_subdomain = "{{env.PROXMOX_SUBDOMAIN}}"
-TF_VAR_cloudflare_zone_id = { required = true, redact = true }
-TF_VAR_tailscale_magic_dns_domain = { required = true, redact = true }
+TF_VAR_proxmox_hostname = "{{env.PROXMOX_HOSTNAME}}"
+TF_VAR_cloudflare_zone_id = { required = true }
+TF_VAR_tailscale_magic_dns_domain = { required = true }
+
+[tasks.require-secrets]
+hide = true
+run = 'test -f .secrets.yaml || { echo "Create .secrets.yaml first with mise run init-secrets"; exit 1; }'
 
 [tasks.init-secrets]
+description = "Create an encrypted .secrets.yaml from .secrets.example.yaml"
 run = """
 test -f .secrets.yaml && { echo ".secrets.yaml already exists"; exit 0; }
-test -n "$SOPS_AGE_RECIPIENTS" || { echo "Set SOPS_AGE_RECIPIENTS in .env first"; exit 1; }
+test -f ../.sops.yaml || { echo "Missing repo-root .sops.yaml; run 'mise run bootstrap' in ../bootstrap first"; exit 1; }
+aws sts get-caller-identity >/dev/null 2>&1 || { echo "AWS credentials not configured (need kms:Encrypt/Decrypt on alias/homelab-sops)"; exit 1; }
 cp .secrets.example.yaml .secrets.yaml
-sops encrypt -i --age "$SOPS_AGE_RECIPIENTS" .secrets.yaml
+sops encrypt -i .secrets.yaml
 """
-description = "Create an encrypted .secrets.yaml from .secrets.example.yaml"
 
 [tasks.edit-secrets]
-run = """
-test -f .secrets.yaml || { echo "Create .secrets.yaml first with 'mise run init-secrets'"; exit 1; }
-sops .secrets.yaml
-"""
 description = "Edit the encrypted secrets file"
+depends = ["require-secrets"]
+run = "sops .secrets.yaml"
 
 [tasks.install-ansible-deps]
-run = "cd ansible && ansible-galaxy install -r requirements.yml"
 description = "Install required Ansible collections and roles"
+run = "cd ansible && ansible-galaxy install -r requirements.yml"
 
 [tasks.bootstrap]
+description = "First-run bootstrap: create admin user and install tailscale via SSH"
+depends = ["require-secrets"]
 run = """
-test -f .secrets.yaml || { echo "Create .secrets.yaml first with 'mise run init-secrets'"; exit 1; }
 cd ansible && ansible-playbook site.yml \
   --tags repos,admin,tailscale \
   -e ansible_host=$PROXMOX_IP \
   -e ansible_user=root \
-  -e ansible_ssh_pass=$ADMIN_PASSWORD
+  -e ansible_ssh_pass=$PROXMOX_ROOT_PASSWORD
 """
-description = "First-run bootstrap: create admin user and install tailscale via SSH"
 
 [tasks.configure-proxmox]
-run = """
-test -f .secrets.yaml || { echo "Create .secrets.yaml first with 'mise run init-secrets'"; exit 1; }
-cd ansible && ansible-playbook site.yml
-"""
 description = "Run all proxmox configuration tasks"
+depends = ["require-secrets"]
+run = "cd ansible && ansible-playbook site.yml"
 
 [tasks.deploy-dns]
-run = """
-test -f .secrets.yaml || { echo "Create .secrets.yaml first with 'mise run init-secrets'"; exit 1; }
-cd terraform && terraform init && terraform apply
-"""
 description = "Deploy cloudflare DNS records"
+depends = ["require-secrets"]
+run = "cd terraform && terraform init && terraform apply"

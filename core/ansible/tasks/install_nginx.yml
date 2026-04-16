@@ -27,11 +27,11 @@
       certbot certonly
       --dns-cloudflare
       --dns-cloudflare-credentials /etc/letsencrypt/cloudflare.ini
-      --domain {{ lookup('env', 'PROXMOX_DOMAIN') }}
+      --domain {{ lookup('env', 'PROXMOX_FQDN') }}
       --non-interactive
       --agree-tos
       --email {{ lookup('env', 'CERTBOT_EMAIL') }}
-    creates: /etc/letsencrypt/live/{{ lookup('env', 'PROXMOX_DOMAIN') }}/fullchain.pem
+    creates: /etc/letsencrypt/live/{{ lookup('env', 'PROXMOX_FQDN') }}/fullchain.pem
 
 - name: Get Tailscale IP
   ansible.builtin.command: tailscale ip -4
@@ -44,10 +44,10 @@
     content: |
       server {
           listen {{ tailscale_ip.stdout }}:443 ssl;
-          server_name {{ lookup('env', 'PROXMOX_DOMAIN') }};
+          server_name {{ lookup('env', 'PROXMOX_FQDN') }};
 
-          ssl_certificate /etc/letsencrypt/live/{{ lookup('env', 'PROXMOX_DOMAIN') }}/fullchain.pem;
-          ssl_certificate_key /etc/letsencrypt/live/{{ lookup('env', 'PROXMOX_DOMAIN') }}/privkey.pem;
+          ssl_certificate /etc/letsencrypt/live/{{ lookup('env', 'PROXMOX_FQDN') }}/fullchain.pem;
+          ssl_certificate_key /etc/letsencrypt/live/{{ lookup('env', 'PROXMOX_FQDN') }}/privkey.pem;
 
           location / {
               proxy_pass https://localhost:8006;
