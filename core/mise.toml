@@ -18,7 +18,19 @@ run = "sudo balena local flash debian.iso"
 
 # Step 3: Using the usb drive, install debian onto your host machine
 
-# Step 4: Apply our Ansible configuration to the host machine
+[tasks.generate-ssh-key]
+# Note: this is a hidden mise tasks
+#       you do not have to run this yourself
+#       it generates a ssh key to use for authenitcation (if it doesn't already exist)
+hide = true
+description = "Generate the local SSH key used for homelab access"
+run = """
+# Check if the key already exists
+test -f ~/.ssh/homelab_ed25519 && exit 0
+# If not, generate key
+ssh-keygen -t ed25519 -f ~/.ssh/homelab_ed25519 -N '' -C homelab
+"""
+
 [tasks.install-ansible-deps]
 # Note: this is a hidden mise tasks
 #       you do not have to run this yourself
@@ -27,7 +39,8 @@ hide = true
 description = "Install required Ansible collections"
 run = "cd ansible && ansible-galaxy install -r requirements.yml"
 
+# Step 4: Apply our Ansible configuration to the host machine
 [tasks.apply-ansible]
 description = "Apply the Ansible playbook"
-depends = ["install-ansible-deps"]
+depends = ["generate-ssh-key", "install-ansible-deps"]
 run = "cd ansible && ansible-playbook site.yml"

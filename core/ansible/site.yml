@@ -69,6 +69,13 @@
         from_ip: "{{ lookup('env', 'LAN_SSH_FROM_IP') }}"
       tags: firewall
 
+    - name: Install SSH public key for Ansible user
+      ansible.posix.authorized_key:
+        user: "{{ ansible_user }}"
+        key: "{{ lookup('file', '~/.ssh/homelab_ed25519.pub') }}"
+        state: present
+      tags: ssh
+
     - name: Enable firewall
       community.general.ufw:
         state: enabled
@@ -83,7 +90,9 @@
       loop:
         - { key: "PermitRootLogin", value: "no" }
         - { key: "PasswordAuthentication", value: "no" }
+        - { key: "KbdInteractiveAuthentication", value: "no" }
         - { key: "PubkeyAuthentication", value: "yes" }
+        - { key: "AuthenticationMethods", value: "publickey" }
         - { key: "MaxAuthTries", value: "3" }
       register: sshd_config_changed
       tags: ssh
