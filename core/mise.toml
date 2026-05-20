@@ -1,17 +1,10 @@
 [tools]
 ansible-core = "latest"
 ansible-lint = "latest"
-awscli = "latest"
 balena = "latest"
 
 [env]
-DEBIAN_VERSION = "13.5.0"
-
-# non-secret config
-HOST_IP = { required = "Host IP address" }
-HOST_NAME = { required = "Short DNS label (e.g. deb)" }
-ROOT_DOMAIN = { required = "Custom domain to use (e.g. homelab.cloud)" }
-CERTBOT_EMAIL = { required = "Email for Let's Encrypt registration" }
+_.file = ".env"
 
 # Step 1: download a debian iso
 [tasks.download-debian-iso]
@@ -25,20 +18,16 @@ run = "sudo balena local flash debian.iso"
 
 # Step 3: Using the usb drive, install debian onto your host machine
 
+# Step 4: Apply our Ansible configuration to the host machine
 [tasks.install-ansible-deps]
-description = "Install required Ansible collections and roles"
+# Note: this is a hidden mise tasks
+#       you do not have to run this yourself
+#       it's used by the apply-ansible tasks to ensure the required dependencies are installed
+hide = true
+description = "Install required Ansible collections"
 run = "cd ansible && ansible-galaxy install -r requirements.yml"
 
-[tasks.bootstrap]
-description = "First-run bootstrap: create admin user and install tailscale via SSH"
-run = """
-cd ansible && ansible-playbook site.yml \
-  --tags repos,admin,tailscale \
-  -e ansible_host=$PROXMOX_IP \
-  -e ansible_user=root \
-  -e ansible_ssh_pass=$PROXMOX_ROOT_PASSWORD
-"""
-
-[tasks.configure-proxmox]
-description = "Run all proxmox configuration tasks"
+[tasks.apply-ansible]
+description = "Apply the Ansible playbook"
+depends = ["install-ansible-deps"]
 run = "cd ansible && ansible-playbook site.yml"
