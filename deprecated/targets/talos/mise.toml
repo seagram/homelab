@@ -1,4 +1,5 @@
 [tools]
+awscli = "latest"
 helm = "latest"
 helmfile = "latest"
 kubectl = "latest"
@@ -16,3 +17,23 @@ description = "Deploy proxmox VMs"
 [tasks.bootstrap-nodes]
 run = "cd terraform && terraform apply -target=module.talos -auto-approve"
 description = "Bootstrap Talos Linux nodes"
+
+###### bootstrap #####
+
+# Note: this is a hidden mise task.
+# It's used as a credentials check by the `bootstrap` task.
+# You can safely ignore this.
+[tasks.check-aws-creds]
+hide = true
+run = '''
+aws sts get-caller-identity >/dev/null 2>&1 || {
+  echo "AWS credentials not found." 
+  echo "Run 'aws configure'"
+  exit 1
+}
+'''
+
+[tasks.bootstrap]
+description = "Bootstrap AWS resources required for homelab"
+depends = ["check-aws-creds"]
+run = "terraform -chdir=bootstrap-terraform init && terraform -chdir=bootstrap-terraform apply -auto-approve"

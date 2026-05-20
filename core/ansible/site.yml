@@ -1,21 +1,114 @@
 ---
-- name: Configure Proxmox
-  hosts: proxmox
+- name: Configure Debian host
+  hosts: debian
   become: true
-  vars:
-    cpu_scaling_governor: powersave # performance | powersave | schedutil
   tasks:
-    - import_tasks: tasks/set_cpu_scaling_governor.yml
-      tags: governor
-    - import_tasks: tasks/create_admin_user.yml
-      tags: admin
-    - import_tasks: tasks/install_tailscale.yml
-      tags: tailscale
-    - import_tasks: tasks/apt_update.yml
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      register: apt_cache_update
       tags: apt
-    - import_tasks: tasks/harden_ssh.yml
+
+    - name: Upgrade apt packages
+      ansible.builtin.apt:
+        upgrade: dist
+        autoremove: yes
+        autoclean: yes
+        force_apt_get: yes
+      register: apt_upgrade_result
+      tags: apt
+
+    - name: Install and configure Tailscale
+      ansible.builtin.include_role:
+        name: artis3n.tailscale.machine
+      vars:
+        state: present
+        tailscale_authkey: "{{ lookup('env', 'TAILSCALE_AUTH_KEY') }}"
+        tailscale_args: "--ssh"
+      tags: tailscale
+
+    - name: Install firewall
+      ansible.builtin.apt:
+        name: ufw
+        state: present
+      tags: firewall
+
+    - name: Deny incoming firewall traffic by default
+      community.general.ufw:
+        direction: incoming
+        default: deny
+      tags: firewall
+
+    - name: Allow outgoing firewall traffic by default
+      community.general.ufw:
+        direction: outgoing
+        default: allow
+      tags: firewall
+
+    - name: Allow incoming firewall traffic from Tailscale
+      community.general.ufw:
+        rule: allow
+        interface: tailscale0
+        direction: in
+      tags: firewall
+
+    - name: Allow SSH from LAN
+      # Note: this is a backup in the case that the host machine loses it's connection to your tailnet
+      #       this allows ssh connections from your lan
+      community.general.ufw:
+        rule: allow
+        port: "22"
+        proto: tcp
+        from_ip: "{{ lookup('env', 'LAN_SSH_FROM_IP') }}"
+      tags: firewall
+
+    - name: Enable firewall
+      community.general.ufw:
+        state: enabled
+      tags: firewall
+
+    - name: Harden SSH server configuration
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "^#?{{ item.key }}\\s"
+        line: "{{ item.key }} {{ item.value }}"
+        validate: "sshd -t -f %s"
+      loop:
+        - { key: "PermitRootLogin", value: "no" }
+        - { key: "PasswordAuthentication", value: "no" }
+        - { key: "PubkeyAuthentication", value: "yes" }
+        - { key: "MaxAuthTries", value: "3" }
+      register: sshd_config_changed
       tags: ssh
-    - import_tasks: tasks/install_nginx.yml
-      tags: nginx
-    - import_tasks: tasks/disable_poweroff.yml
+
+    - name: Restart SSH server
+      ansible.builtin.systemd:
+        name: ssh
+        state: restarted
+      when: sshd_config_changed is changed
+      tags: ssh
+
+    - name: Ignore laptop lid close
+      ansible.builtin.lineinfile:
+        path: /etc/systemd/logind.conf
+        regexp: "^#?{{ item.key }}="
+        line: "{{ item.key }}={{ item.value }}"
+        backup: yes
+      loop:
+        - { key: "HandleLidSwitch", value: "ignore" }
+        - { key: "HandleLidSwitchDocked", value: "ignore" }
+        - { key: "HandleLidSwitchExternalPower", value: "ignore" }
+      register: logind_config_changed
+      when: lookup('env', 'HOST_IS_LAPTOP') | bool
+      tags: poweroff
+
+    - name: Restart systemd-logind
+      ansible.builtin.systemd:
+        name: systemd-logind
+        state: restarted
+        daemon_reload: yes
+      when:
+        - lookup('env', 'HOST_IS_LAPTOP') | bool
+        - logind_config_changed is changed
       tags: poweroff
