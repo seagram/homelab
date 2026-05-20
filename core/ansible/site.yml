@@ -7,8 +7,6 @@
   tasks:
     - import_tasks: tasks/set_cpu_scaling_governor.yml
       tags: governor
-    - import_tasks: tasks/create_admin_user.yml
-      tags: admin
     - import_tasks: tasks/install_tailscale.yml
       tags: tailscale
     - import_tasks: tasks/apt_update.yml

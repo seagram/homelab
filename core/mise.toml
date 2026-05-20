@@ -31,7 +31,6 @@ run = "cd ansible && ansible-galaxy install -r requirements.yml"
 
 [tasks.bootstrap]
 description = "First-run bootstrap: create admin user and install tailscale via SSH"
-depends = ["require-secrets"]
 run = """
 cd ansible && ansible-playbook site.yml \
   --tags repos,admin,tailscale \
@@ -42,5 +41,4 @@ cd ansible && ansible-playbook site.yml \
 
 [tasks.configure-proxmox]
 description = "Run all proxmox configuration tasks"
-depends = ["require-secrets"]
 run = "cd ansible && ansible-playbook site.yml"
