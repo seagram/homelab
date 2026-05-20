@@ -1,23 +1,8 @@
 [tools]
-awscli = "latest"
 balena = "latest"
-terraform = "latest"
 
 [env]
 DEBIAN_VERSION = "13.5.0"
-
-# Note: this is a hidden mise task.
-# It's used as a credentials check by the `bootstrap` task.
-# You can safely ignore this.
-[tasks.check-aws-creds]
-hide = true
-run = '''
-aws sts get-caller-identity >/dev/null 2>&1 || {
-  echo "AWS credentials not found." 
-  echo "Run 'aws configure'"
-  exit 1
-}
-'''
 
 # Step 1: download a debian iso
 [tasks.download-debian-iso]
@@ -30,9 +15,3 @@ description = "Flash ISO to USB with balena"
 run = "sudo balena local flash debian.iso"
 
 # Step 3: Using the usb drive, install debian onto your host machine
-
-# Step 4;
-[tasks.bootstrap]
-description = "Bootstrap AWS resources required for homelab"
-depends = ["check-aws-creds"]
-run = "terraform -chdir=terraform init && terraform -chdir=terraform apply -auto-approve"
