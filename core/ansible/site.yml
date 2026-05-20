@@ -5,8 +5,6 @@
   vars:
     cpu_scaling_governor: powersave # performance | powersave | schedutil
   tasks:
-    - import_tasks: tasks/configure_repos.yml
-      tags: repos
     - import_tasks: tasks/set_cpu_scaling_governor.yml
       tags: governor
     - import_tasks: tasks/create_admin_user.yml
