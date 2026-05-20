@@ -1,6 +1,0 @@
-[tools]
-hugo = "latest"
-
-[tasks.docs]
-run = "cd docs && hugo server --buildDrafts -O"
-description = "Serve and open docs site"

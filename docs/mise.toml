@@ -1,0 +1,6 @@
+[tools]
+zola = "latest"
+
+[tasks.default]
+run = "zola serve --open"
+description = "Serve and open docs site"
