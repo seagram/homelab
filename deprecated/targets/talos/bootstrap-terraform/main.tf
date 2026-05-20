@@ -1,3 +1,7 @@
+###### AWS S3 #####
+# These resources define an S3 bucket and it's configuration
+# We'll use this bucket to store all of our terraform/opentofu state files remotely
+
 resource "aws_s3_bucket" "terraform_state" {
   bucket = "homelab-terraform-state-bucket"
 }
@@ -25,6 +29,9 @@ resource "aws_s3_bucket_public_access_block" "terraform_state" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+##### AWS KMS #####
+# These resources are for storing our private SOPS key remotely
 
 resource "aws_kms_key" "sops" {
   description             = "SOPS encryption key for homelab secrets"

@@ -6,6 +6,9 @@ terraform = "latest"
 [env]
 DEBIAN_VERSION = "13.5.0"
 
+# Note: this is a hidden mise task.
+# It's used as a credentials check by the `bootstrap` task.
+# You can safely ignore this.
 [tasks.check-aws-creds]
 hide = true
 run = '''
@@ -16,14 +19,19 @@ aws sts get-caller-identity >/dev/null 2>&1 || {
 }
 '''
 
+# Step 1: download a debian iso
 [tasks.download-debian-iso]
 description = "Download Debian server netinst ISO"
 run = "curl -Lo debian.iso https://cdimage.debian.org/debian-cd/${DEBIAN_VERSION}/amd64/iso-cd/debian-${DEBIAN_VERSION}-amd64-netinst.iso"
 
+# Step 2: flash the downloaded image to your usb drive using balena
 [tasks.flash-debian-usb]
 description = "Flash ISO to USB with balena"
 run = "sudo balena local flash debian.iso"
 
+# Step 3: Using the usb drive, install debian onto your host machine
+
+# Step 4;
 [tasks.bootstrap]
 description = "Bootstrap AWS resources required for homelab"
 depends = ["check-aws-creds"]
