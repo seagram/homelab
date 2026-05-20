@@ -13,7 +13,5 @@
       tags: apt
     - import_tasks: tasks/harden_ssh.yml
       tags: ssh
-    - import_tasks: tasks/install_nginx.yml
-      tags: nginx
     - import_tasks: tasks/disable_poweroff.yml
       tags: poweroff
