@@ -3,6 +3,9 @@ awscli = "latest"
 balena = "latest"
 terraform = "latest"
 
+[env]
+DEBIAN_VERSION = "13.5.0"
+
 [tasks.check-aws-creds]
 hide = true
 run = '''
@@ -13,13 +16,13 @@ aws sts get-caller-identity >/dev/null 2>&1 || {
 }
 '''
 
-[tasks.download-proxmox-iso]
-description = "Download Proxmox ISO"
-run = "curl -Lo proxmox.iso https://enterprise.proxmox.com/iso/proxmox-ve_9.1-1.iso"
+[tasks.download-debian-iso]
+description = "Download Debian server netinst ISO"
+run = "curl -Lo debian.iso https://cdimage.debian.org/debian-cd/${DEBIAN_VERSION}/amd64/iso-cd/debian-${DEBIAN_VERSION}-amd64-netinst.iso"
 
-[tasks.flash-proxmox-usb]
+[tasks.flash-debian-usb]
 description = "Flash ISO to USB with balena"
-run = "sudo balena local flash proxmox.iso"
+run = "sudo balena local flash debian.iso"
 
 [tasks.bootstrap]
 description = "Bootstrap AWS resources required for homelab"
