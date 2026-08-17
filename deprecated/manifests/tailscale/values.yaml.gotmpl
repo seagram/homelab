@@ -1,9 +1,0 @@
-oauth:
-  clientId: {{ requiredEnv "TAILSCALE_OAUTH_CLIENT_ID" }}
-  clientSecret: {{ requiredEnv "TAILSCALE_OAUTH_CLIENT_SECRET" }}
-
-operatorConfig:
-  tolerations:
-    - key: node-role.kubernetes.io/control-plane
-      operator: Exists
-      effect: NoSchedule

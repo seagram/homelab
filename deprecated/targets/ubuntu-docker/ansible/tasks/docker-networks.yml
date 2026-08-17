@@ -1,8 +1,0 @@
----
-- name: Ensure shared docker networks exist
-  community.docker.docker_network:
-    name: "{{ item }}"
-    state: present
-  loop:
-    - proxy
-    - observability
