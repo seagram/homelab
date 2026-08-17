@@ -19,11 +19,13 @@
       register: apt_upgrade_result
       tags: apt
 
-    - name: Install Incus
+    - name: Install packages
       ansible.builtin.apt:
-        name: incus
+        name:
+          - incus
         state: present
-      tags: incus
+        update_cache: true
+        cache_valid_time: 3600
 
     - name: Install and configure Tailscale
       ansible.builtin.include_role:

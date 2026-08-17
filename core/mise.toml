@@ -1,7 +1,6 @@
 [tools]
-ansible-core = "latest"
-ansible-lint = "latest"
 balena = "latest"
+uv = "latest"
 
 [env]
 _.file = ".env"
@@ -37,10 +36,19 @@ ssh-keygen -t ed25519 -f ~/.ssh/homelab_ed25519 -N '' -C homelab
 #       it's used by the apply-ansible tasks to ensure the required dependencies are installed
 hide = true
 description = "Install required Ansible collections"
-run = "cd ansible && ansible-galaxy install -r requirements.yml"
+run = "cd ansible && uvx --python 3.12 --from ansible-core ansible-galaxy install -r requirements.yml"
+
+[tasks.run-ansible-playbook]
+description = "Run the core Ansible playbook"
+run = "cd ansible && uvx --python 3.12 --from ansible-core ansible-playbook site.yml"
 
 # Step 4: Apply our Ansible configuration to the host machine
 [tasks.apply-ansible]
 description = "Apply the Ansible playbook"
 depends = ["generate-ssh-key", "install-ansible-deps"]
-run = "cd ansible && ansible-playbook site.yml"
+run = "cd ansible && uvx --python 3.12 --from ansible-core ansible-playbook site.yml"
+
+[tasks.apply-ansible-password]
+description = "Apply the Ansible playbook using password prompts"
+depends = ["generate-ssh-key", "install-ansible-deps"]
+run = "cd ansible && uvx --python 3.12 --from ansible-core ansible-playbook site.yml --ask-pass --ask-become-pass"
