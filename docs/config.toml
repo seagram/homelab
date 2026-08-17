@@ -7,6 +7,5 @@ minify_html = true
 [extra]
 sections = [
   { title = "bootstrap", path = "/bootstrap/", content = "@/bootstrap/_index.md" },
-  { title = "core", path = "/core/", content = "@/core/_index.md" },
-  { title = "targets", path = "/targets/", content = "@/targets/_index.md" },
+  { title = "architecture", path = "/architecture/", content = "@/architecture/_index.md" },
 ]

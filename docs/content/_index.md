@@ -8,14 +8,11 @@ sort_by = "weight"
 A homelab for self-hosting open source software.
 
 ## Requirements
+This homelab is running on an old laptop with:
 
-- 4+ CPU cores
-- 16GB+ RAM
-- 512GB+ storage
-- [Proxmox VE](https://www.proxmox.com/en/proxmox-virtual-environment/overview) 9.1.6
-
-> These figures can change depending on the number of services you run and which deployment target you choose.
-> For reference, all deployment targets have been tested on a 2015 MacBook Pro with similar hardware specs as mentioned above.
+- 4 CPU
+- 16GB DDR3 RAM
+- 512GB SSD
 
 ## Installation
 
