@@ -1,0 +1,47 @@
+[env]
+DEBIAN_USER = ""
+DEBIAN_HOST = ""
+TAILSCALE_AUTH_KEY = ""
+
+[bootstrap.packages]
+"apt:ufw" = "latest"
+"apt:tailscale" = "latest"
+"apt:incus" = "latest"
+
+[bootstrap.remote]
+"source" = "."
+
+[bootstrap.remote.hosts.debian]
+host = "$DEBIAN_HOST"
+user = "$DEBIAN_USER"
+port = 22
+
+# Support intial over ssh, sequential times over tailscale
+[bootstrap.linux.firewall]
+backend = "ufw"
+state = "enabled"
+default_incoming = "deny"
+default_outgoing = "allow"
+
+[[bootstrap.linux.firewall.rules]]
+# Allow incoming traffic through tailscale
+name = "tailscale"
+action = "allow"
+protocol = "tcp"
+direction = "incoming"
+interface = "tailscale0"
+
+[[bootstrap.linux.firewall.rules]]
+# Backup: allow ssh from local lan
+name = "lan"
+port = "22"
+protocol = "tcp"
+action = "allow"
+source = "$LAN_IP"
+
+
+[boostrap.services.tailscale]
+state = "running"
+enabled = true
+on_change = "reload_or_restart"
+
