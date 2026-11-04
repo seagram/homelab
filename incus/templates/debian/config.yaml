@@ -1,0 +1,8 @@
+config:
+  limits.cpu: "2"
+  limits.memory: 4GiB
+  security.secureboot: "false"
+devices:
+  eth0:
+    type: nic
+    network: incusbr0
