@@ -1,3 +1,11 @@
-[tools]
-packer = "latest"
-terraform = "latest"
+[tasks.launch-nixos]
+run = '''
+incus create images:nixos/26.05 --vm nixos < templates/nixos/config.yaml
+incus start nixos
+'''
+
+[tasks.launch-debian]
+run = '''
+incus create images:debian/13 --vm debian < templates/debian/config.yaml
+incus start debian
+'''
