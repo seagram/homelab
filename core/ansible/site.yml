@@ -66,7 +66,7 @@
       #       this allows ssh connections from your lan
       community.general.ufw:
         rule: allow
-        port: "22"
+        port: 22
         proto: tcp
         from_ip: "{{ lookup('env', 'LAN_SSH_FROM_IP') }}"
       tags: firewall
